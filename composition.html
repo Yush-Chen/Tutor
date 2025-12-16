@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>組成/包含：make up, consist of, compose, comprise, constitute, include, contain</title>
+  <style>
+    :root{
+      --bg: #f9fafb;
+      --card: rgba(255,255,255,0.94);
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted:#6b7280;
+      --accent:#ffb7c5;
+      --accent2:#f97373;
+      --soft:#ffe4ec;
+      --shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #ffe4ec 0, #f9fafb 45%, #e0f2fe 100%);
+      color:var(--text);
+      line-height:1.65;
+    }
+    .wrap{
+      max-width: 1040px;
+      margin: 24px auto 44px;
+      padding: 0 16px;
+    }
+    .hero{
+      background: rgba(255,255,255,0.92);
+      border-radius: 28px;
+      padding: 18px 20px 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
+    .hero::before{
+      content:"🦊✨";
+      position:absolute;
+      right:20px;
+      top:14px;
+      font-size:46px;
+      opacity:0.2;
+      transform: rotate(-10deg);
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background: var(--soft);
+      color:#b91c1c;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-weight:700;
+      font-size:0.8rem;
+      margin-bottom:8px;
+    }
+    .hero h1{
+      margin:0 0 6px;
+      font-size:1.7rem;
+    }
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:0.98rem;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1.45fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 920px){
+      .layout{ grid-template-columns: 1fr; }
+      .hero::before{ display:none; }
+    }
+
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px 18px 18px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(255,255,255,0.85);
+    }
+    .card h2{
+      margin:0 0 6px;
+      font-size:1.25rem;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .sub{
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .pillrow{ margin: 8px 0 6px; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.76rem;
+      padding: 2px 10px;
+      border-radius:999px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      margin-right:6px;
+      margin-bottom:6px;
+      border:1px solid #dbeafe;
+    }
+    .pill.green{ background:#ecfdf3; color:#15803d; border-color:#bbf7d0; }
+    .pill.orange{ background:#fff7ed; color:#c05621; border-color:#fed7aa; }
+    .pill.pink{ background:#fdf2ff; color:#c026d3; border-color:#f5d0fe; }
+
+    .key{
+      background:#fefce8;
+      border-left: 3px solid #facc15;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      margin: 8px 0;
+    }
+    .mini{
+      font-size:0.78rem;
+      font-weight:800;
+      letter-spacing:0.06em;
+      text-transform: uppercase;
+      color:#9ca3af;
+      margin: 8px 0 4px;
+    }
+    .example{
+      background:#f9fafb;
+      border: 1px dashed #e5e7eb;
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin: 8px 0;
+      font-size: 0.94rem;
+    }
+    .example .en{ font-weight:700; }
+    .example .zh{ color:var(--muted); font-size:0.9rem; margin-top:2px; }
+
+    details{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f9fafb;
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .chev{ color:var(--muted); font-size:0.9rem; }
+    details[open] .chev{ transform: rotate(180deg); }
+    .content{
+      margin-top: 8px;
+      color: #111827;
+      font-size: 0.95rem;
+    }
+    ul{ padding-left: 1.1rem; margin: 6px 0; }
+    li{ margin: 2px 0; }
+
+    /* Practice UI */
+    .tabs{
+      display:flex;
+      background:#f3f4f6;
+      border-radius:999px;
+      padding: 3px;
+      gap: 4px;
+      margin: 10px 0 10px;
+    }
+    .tabbtn{
+      flex:1;
+      border:none;
+      background:transparent;
+      padding: 7px 8px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size:0.9rem;
+      transition: 0.18s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+    }
+    .tabbtn.active{
+      background:white;
+      box-shadow: 0 1px 4px rgba(15,23,42,0.15);
+      color:#b91c1c;
+      font-weight:800;
+    }
+
+    .controls{
+      display:flex;
+      justify-content:flex-end;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .btn{
+      border-radius:999px;
+      border: 1px solid #e5e7eb;
+      background:white;
+      color:#374151;
+      cursor:pointer;
+      padding: 5px 10px;
+      font-size:0.82rem;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition: 0.15s ease;
+    }
+    .btn:hover{
+      background:#f9fafb;
+      box-shadow: 0 1px 4px rgba(15,23,42,0.12);
+      transform: translateY(-0.5px);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:white;
+      border-color: transparent;
+    }
+    .btn.primary:hover{
+      box-shadow: 0 3px 10px rgba(248, 113, 113, 0.45);
+    }
+
+    .section{ display:none; }
+    .section.active{ display:block; }
+
+    .q{
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      border-radius: 12px;
+      padding: 10px 10px 42px;
+      margin: 8px 0;
+      position:relative;
+    }
+    .qlabel{
+      font-size:0.82rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .qtext{
+      font-size:0.95rem;
+    }
+    .ans{
+      display:none;
+      margin-top: 8px;
+      font-size:0.92rem;
+      background:#ecfdf3;
+      border:1px solid #bbf7d0;
+      color:#15803d;
+      border-radius: 999px;
+      padding: 3px 10px 4px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .ans .tag2{
+      font-size:0.74rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      opacity:0.85;
+    }
+    .toggle{
+      position:absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+    .hr{
+      border:none;
+      border-top: 1px dashed #e5e7eb;
+      margin: 12px 0;
+    }
+    .foot{
+      color:#9ca3af;
+      font-size:0.78rem;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="tag">🧩 組成句型大全</div>
+      <h1>"部分 ⇄ 整體"：make up / consist of / compose / comprise / constitute / include / contain</h1>
+    </header>
+
+    <main class="layout">
+      <!-- LEFT: Explanation -->
+      <section class="card">
+        <h2>📘 文法講解（附例句）</h2>
+        <p class="sub">先抓方向，再選動詞。</p>
+
+        <div class="key">
+          <strong>兩個方向：</strong><br>
+          ① <strong>部分 → 整體</strong>（小組成大）<br>
+          ② <strong>整體 → 部分</strong>（大由小組成）
+        </div>
+
+        <div class="pillrow">
+          <span class="pill green">部分 → 整體</span>
+          <span class="pill">make up</span>
+          <span class="pill">constitute</span>
+          <span class="pill">compose</span>
+        </div>
+        <div class="pillrow">
+          <span class="pill orange">整體 → 部分</span>
+          <span class="pill">be made up of</span>
+          <span class="pill">consist of</span>
+          <span class="pill">be composed of</span>
+          <span class="pill">comprise</span>
+        </div>
+        <div class="pillrow">
+          <span class="pill pink">包含（不一定是構成）</span>
+          <span class="pill">include</span>
+          <span class="pill">contain</span>
+        </div>
+
+        <details open>
+          <summary>
+            1) make up / be made up of（最常考、最萬用）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="mini">部分 → 整體</div>
+            <div class="key"><strong>A make(s) up B</strong></div>
+            <div class="example">
+              <div class="en">Women make up 60% of the class.</div>
+            </div>
+            <div class="example">
+              <div class="en">Three chapters make up the first unit.</div>
+            </div>
+
+            <div class="mini">整體 → 部分</div>
+            <div class="key"><strong>B be made up of A</strong></div>
+            <div class="example">
+              <div class="en">The class is made up of students from different schools.</div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            2) consist of（大地雷：幾乎不用被動）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="key"><strong>B consist(s) of A</strong></div>
+            <div class="example">
+              <div class="en">The team consists of five members.</div>
+            </div>
+            <div class="example">
+              <div class="en">Water consists of hydrogen and oxygen.</div>
+            </div>
+            <div class="key">❌ The team is consisted of five members.（考試很愛用來騙人）<br>✅ The team consists of five members.</div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            3) be composed of / compose（正式版、寫作很香）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="mini">整體 → 部分</div>
+            <div class="key"><strong>B be composed of A</strong></div>
+            <div class="example">
+              <div class="en">The report is composed of three sections.</div>
+            </div>
+
+            <div class="mini">部分 → 整體（較正式、較少用）</div>
+            <div class="key"><strong>A compose(s) B</strong></div>
+            <div class="example">
+              <div class="en">Three sections compose the report.</div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            4) comprise（整體包含部分）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="key"><strong>B comprise(s) A</strong></div>
+            <div class="example">
+              <div class="en">The committee comprises ten members.</div>
+              <div class="zh">委員會由十位成員組成。</div>
+            </div>
+            <div class="example">
+              <div class="en">The course comprises four modules.</div>
+              <div class="zh">課程包含四個模組。</div>
+		<div class="key">comprise的被動用法較有爭議性，考試時安全一點的做法還是以使用主動式為主</div>
+            <div class="example">
+            </div>
+
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            5) constitute（正式版 make up，尤其比例句）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="key"><strong>A constitute(s) B</strong>（部分 → 整體）</div>
+            <div class="example">
+              <div class="en">Women constitute 60% of the workforce.</div>
+            </div>
+            <div class="example">
+              <div class="en">These factors constitute the main cause of the delay.</div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>
+            6) include / contain（包含，不一定是「組成材料」）
+            <span class="chev">▼</span>
+          </summary>
+          <div class="content">
+            <div class="key"><strong>include</strong>：把某項算進去（列舉其中一些也可以）</div>
+            <div class="example">
+              <div class="en">The price includes tax.</div>
+              <div class="zh">價格包含稅金。</div>
+            </div>
+            <div class="example">
+              <div class="en">The package includes a charger and a case.</div>
+              <div class="zh">包裝內含充電器和保護殼。</div>
+            </div>
+
+            <div class="key"><strong>contain</strong>：內含、容納（常指內容物、成分）</div>
+            <div class="example">
+              <div class="en">This bottle contains water.</div>
+              <div class="zh">這個瓶子裡裝著水。</div>
+            </div>
+            <div class="example">
+              <div class="en">The document contains personal information.</div>
+              <div class="zh">文件含有個資。</div>
+            </div>
+          </div>
+        </details>
+
+        <hr class="hr">
+        <h2>🧠 延伸＆進階補充（考試陷阱區）</h2>
+        <div class="key">
+          <strong>超常見陷阱：</strong>
+          <ul>
+            <li>❌ "is consisted of" → ✅ "consists of"</li>
+            <li>比例句最自然：✅ "make up" / "constitute"</li>
+            <li>想寫正式：✅ "be composed of" / "comprise"</li>
+            <li>"include / contain" 是「包含」，不一定等於「組成材料」</li>
+          </ul>
+        </div>
+
+
+      </section>
+
+      <!-- RIGHT: Practice -->
+      <section class="card">
+        <h2>📝 練習題（互動）</h2>
+
+
+        <div class="tabs">
+          <button class="tabbtn active" data-tab="basic">🌱 基礎 10 題</button>
+          <button class="tabbtn" data-tab="adv">🚀 進階 10 題</button>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="showAll">顯示全部答案</button>
+          <button class="btn" id="hideAll">隱藏全部答案</button>
+        </div>
+
+        <!-- BASIC -->
+        <div class="section active" id="basic">
+          <div class="q">
+            <div class="qlabel">基礎 1</div>
+            <div class="qtext">Women ________ 55% of the class.</div>
+            <button class="btn toggle" data-toggle="a1">顯示答案</button>
+            <div class="ans" id="a1"><span class="tag2">Ans.</span> make up</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 2</div>
+            <div class="qtext">The class is ________ ________ ________ students from different schools.</div>
+            <button class="btn toggle" data-toggle="a2">顯示答案</button>
+            <div class="ans" id="a2"><span class="tag2">Ans.</span> made up of</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 3</div>
+            <div class="qtext">The team ________ ________ five members.</div>
+            <button class="btn toggle" data-toggle="a3">顯示答案</button>
+            <div class="ans" id="a3"><span class="tag2">Ans.</span> consists of</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 4</div>
+            <div class="qtext">The report is ________ ________ three sections.</div>
+            <button class="btn toggle" data-toggle="a4">顯示答案</button>
+            <div class="ans" id="a4"><span class="tag2">Ans.</span> composed of</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 5</div>
+            <div class="qtext">Three sections ________ the report.</div>
+            <button class="btn toggle" data-toggle="a5">顯示答案</button>
+            <div class="ans" id="a5"><span class="tag2">Ans.</span> compose</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 6</div>
+            <div class="qtext">The course ________ four modules.</div>
+            <button class="btn toggle" data-toggle="a6">顯示答案</button>
+            <div class="ans" id="a6"><span class="tag2">Ans.</span> comprises</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 7</div>
+            <div class="qtext">This box ________ several old photos.</div>
+            <button class="btn toggle" data-toggle="a7">顯示答案</button>
+            <div class="ans" id="a7"><span class="tag2">Ans.</span> contains</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 8</div>
+            <div class="qtext">The ticket price ________ tax.</div>
+            <button class="btn toggle" data-toggle="a8">顯示答案</button>
+            <div class="ans" id="a8"><span class="tag2">Ans.</span> includes</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 9</div>
+            <div class="qtext">Oxygen and hydrogen ________ water.</div>
+            <button class="btn toggle" data-toggle="a9">顯示答案</button>
+            <div class="ans" id="a9"><span class="tag2">Ans.</span> constitute</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">基礎 10</div>
+            <div class="qtext">These rules ________ the foundation of the system.</div>
+            <button class="btn toggle" data-toggle="a10">顯示答案</button>
+            <div class="ans" id="a10"><span class="tag2">Ans.</span> constitute</div>
+          </div>
+        </div>
+
+        <!-- ADVANCED -->
+        <div class="section" id="adv">
+          <div class="q">
+            <div class="qlabel">進階 1</div>
+            <div class="qtext">Rewrite: "Ten volunteers make up the committee." (use "be made up of")</div>
+            <button class="btn toggle" data-toggle="b1">顯示答案</button>
+            <div class="ans" id="b1"><span class="tag2">Ans.</span> The committee is made up of ten volunteers.</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 2</div>
+            <div class="qtext">Rewrite: "The organization consists of five departments." (use "be composed of")</div>
+            <button class="btn toggle" data-toggle="b2">顯示答案</button>
+            <div class="ans" id="b2"><span class="tag2">Ans.</span> The organization is composed of five departments.</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 3</div>
+            <div class="qtext">Correct the sentence: "The team is consisted of six players."</div>
+            <button class="btn toggle" data-toggle="b3">顯示答案</button>
+            <div class="ans" id="b3"><span class="tag2">Ans.</span> The team consists of six players.</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 4</div>
+            <div class="qtext">Choose the best verb: "The package ________ a charger, a cable, and a manual." (include / contain)</div>
+            <button class="btn toggle" data-toggle="b4">顯示答案</button>
+            <div class="ans" id="b4"><span class="tag2">Ans.</span> includes</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 5</div>
+            <div class="qtext">Choose the best verb: "This medicine ________ no sugar." (include / contain)</div>
+            <button class="btn toggle" data-toggle="b5">顯示答案</button>
+            <div class="ans" id="b5"><span class="tag2">Ans.</span> contains</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 6</div>
+            <div class="qtext">Rewrite: "The committee comprises twelve members." (use "be made up of")</div>
+            <button class="btn toggle" data-toggle="b6">顯示答案</button>
+            <div class="ans" id="b6"><span class="tag2">Ans.</span> The committee is made up of twelve members.</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 7</div>
+            <div class="qtext">Rewrite: "Young people constitute 40% of the population." (use "make up")</div>
+            <button class="btn toggle" data-toggle="b7">顯示答案</button>
+            <div class="ans" id="b7"><span class="tag2">Ans.</span> Young people make up 40% of the population.</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 8</div>
+            <div class="qtext">Fill in: "The final grade ________ homework (20%), quizzes (30%), and a final exam (50%)."</div>
+            <button class="btn toggle" data-toggle="b8">顯示答案</button>
+            <div class="ans" id="b8"><span class="tag2">Ans.</span> is made up of</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 9</div>
+            <div class="qtext">Fill in: "Three key factors ________ the main cause of the problem."</div>
+            <button class="btn toggle" data-toggle="b9">顯示答案</button>
+            <div class="ans" id="b9"><span class="tag2">Ans.</span> constitute</div>
+          </div>
+
+          <div class="q">
+            <div class="qlabel">進階 10</div>
+            <div class="qtext">Rewrite to be more formal: "The report is made up of five parts."</div>
+            <button class="btn toggle" data-toggle="b10">顯示答案</button>
+            <div class="ans" id="b10"><span class="tag2">Ans.</span> The report comprises five parts. / The report is composed of five parts.</div>
+          </div>
+        </div>
+
+        <div class="foot">小提醒：右下角按鈕可以一題一題揭曉；上方也能一鍵顯示/隱藏全部答案。</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Tabs
+    const tabBtns = document.querySelectorAll(".tabbtn");
+    const sections = document.querySelectorAll(".section");
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tab;
+        tabBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        sections.forEach(sec => {
+          sec.classList.toggle("active", sec.id === target);
+        });
+      });
+    });
+
+    // Individual answer toggle
+    const toggles = document.querySelectorAll("[data-toggle]");
+    toggles.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.toggle;
+        const ans = document.getElementById(id);
+        const hidden = getComputedStyle(ans).display === "none";
+        ans.style.display = hidden ? "inline-flex" : "none";
+        btn.textContent = hidden ? "隱藏答案" : "顯示答案";
+      });
+    });
+
+    // Show/Hide all answers
+    const showAll = document.getElementById("showAll");
+    const hideAll = document.getElementById("hideAll");
+
+    showAll.addEventListener("click", () => {
+      document.querySelectorAll(".ans").forEach(a => a.style.display = "inline-flex");
+      document.querySelectorAll("[data-toggle]").forEach(b => b.textContent = "隱藏答案");
+    });
+
+    hideAll.addEventListener("click", () => {
+      document.querySelectorAll(".ans").forEach(a => a.style.display = "none");
+      document.querySelectorAll("[data-toggle]").forEach(b => b.textContent = "顯示答案");
+    });
+
+    // Start hidden
+    document.querySelectorAll(".ans").forEach(a => a.style.display = "none");
+  </script>
+</body>
+</html>

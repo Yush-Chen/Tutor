@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8 Grammar: Convenience Stores</title>
+    <style>
+        :root {
+            --primary: #27ae60; /* 7-11/FamilyMart Green vibe */
+            --secondary: #2ecc71;
+            --accent: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background-color: #f0f7f4;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #16a085);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "OPEN 24 HOURS";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            border: 1px solid white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
+
+        header h1 { margin: 0; font-size: 2.2rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+        header p { opacity: 0.95; margin-top: 10px; font-size: 1.1rem; }
+
+        .container {
+            max-width: 900px;
+            margin: -30px auto 40px;
+            padding: 0 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Nav Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #fdfdfd;
+            transform: translateY(-1px);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin-top: 0;
+        }
+
+        h3 { color: var(--dark); margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px;}
+
+        /* Grammar Boxes */
+        .formula-box {
+            background: #e8f8f5;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: "Consolas", monospace;
+            font-size: 1.1em;
+            color: #0e6251;
+        }
+
+        .example-box {
+            background: #f9f9f9;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .trap-box {
+            background: #fdedec;
+            border: 2px dashed var(--danger);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .trap-title {
+            color: var(--danger);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        /* Review Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th { background-color: var(--primary); color: white; }
+        tr:nth-child(even) { background-color: #f8f8f8; }
+
+        /* Quiz Styles */
+        .quiz-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question { font-weight: bold; margin-bottom: 10px; font-size: 1.05rem; }
+        .options label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .options label:hover { background-color: #f0f0f0; }
+        
+        .input-answer {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .check-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            font-size: 0.95rem;
+        }
+        .feedback.correct { background-color: #d4efdf; color: #145a32; }
+        .feedback.wrong { background-color: #fadbd8; color: #7b241c; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Lesson 8 Grammar Station</h1>
+    <p>Convenience Stores: The More You Buy, The Less You Have? 😆</p>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('warmup')">🔥 前導觀念</button>
+        <button class="tab-btn" onclick="switchTab('grammar1')">📘 文法一: 愈...愈...</button>
+        <button class="tab-btn" onclick="switchTab('grammar2')">📗 文法二: 為了(目的)</button>
+        <button class="tab-btn" onclick="switchTab('quiz-basic')">⚔️ 基礎練習 (10題)</button>
+        <button class="tab-btn" onclick="switchTab('quiz-adv')">💀 進階挑戰 (10題)</button>
+    </div>
+
+    <!-- 1. Warm-up -->
+    <div id="warmup" class="content-section active">
+        <h2>🔥 前導觀念複習：比較級 (Comparatives)</h2>
+        <p>在學習「愈...愈...」句型前，必須先熟悉形容詞與副詞的比較級變化。記住規則了嗎？</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>規則</th>
+                    <th>原級 (Positive)</th>
+                    <th>比較級 (Comparative)</th>
+                    <th>備註</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>單音節 (+er)</td>
+                    <td>fast / high</td>
+                    <td>fast<strong>er</strong> / high<strong>er</strong></td>
+                    <td>直接加 er</td>
+                </tr>
+                <tr>
+                    <td>字尾是 y (去y+ier)</td>
+                    <td>heavy / busy</td>
+                    <td>heav<strong>ier</strong> / bus<strong>ier</strong></td>
+                    <td>這課很多這種字！(e.g., early)</td>
+                </tr>
+                <tr>
+                    <td>多音節 (more + Adj)</td>
+                    <td>visible / convenient</td>
+                    <td><strong>more</strong> visible / <strong>more</strong> convenient</td>
+                    <td>三個音節以上，或部分雙音節</td>
+                </tr>
+                <tr>
+                    <td><strong>不規則 (必背!)</strong></td>
+                    <td>good / bad / many</td>
+                    <td><strong>better</strong> / <strong>worse</strong> / <strong>more</strong></td>
+                    <td>這一課最常考！</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>💡 <strong>小測驗：</strong> Friendly 的比較級是什麼？ (答案：more friendly 或 friendlier 都可以喔！)</p>
+    </div>
+
+    <!-- 2. Grammar 1: The more, the more -->
+    <div id="grammar1" class="content-section">
+        <h2>📘 文法一：The + 比較級..., the + 比較級...</h2>
+        <p>用來表示兩個動作或狀態有「連動關係」，意思是「愈......，就愈......」。</p>
+
+        <div class="formula-box">
+            The + Comparative + S + V, the + Comparative + S + V.
+        </div>
+
+        <h3>1. 基礎用法 (Basic Usage)</h3>
+        <div class="example-box">
+            <p><strong>Example:</strong></p>
+            <p>The <strong>harder</strong> the wind blew, the <strong>tighter</strong> the traveler pulled his coat.</p>
+            <p>(風吹得愈強勁，旅人把大衣拉得愈緊。)</p>
+        </div>
+        <div class="example-box">
+            <p><strong>Example:</strong></p>
+            <p>The <strong>more visible</strong> the products are, the <strong>easier</strong> it is for shoppers to notice them.</p>
+            <p>(商品愈顯眼，購物者就愈容易注意到它們。)</p>
+        </div>
+
+        <h3>2. 省略用法 (Omission)</h3>
+        <p>在口語或諺語中，如果意思清楚，後面的主詞與動詞 (S + V) 常被省略，甚至只剩下兩個比較級。</p>
+        <div class="example-box">
+            <p><strong>The sooner, the better.</strong> (愈快愈好。)</p>
+            <p><strong>The more, the merrier.</strong> (人愈多愈熱鬧/快樂。)</p>
+        </div>
+
+        <h3>3. 進階：比較級修飾名詞</h3>
+        <p>如果比較級是用來修飾名詞的，名詞要跟著比較級一起搬到句首！</p>
+        <div class="formula-box">
+            The + Comparative + <strong>Noun</strong> + S + V ...
+        </div>
+        <div class="example-box">
+            <p>The <strong>more time</strong> you spend in the store, the <strong>more money</strong> you spend.</p>
+            <p>(你在店裡花愈多時間，你就會花愈多錢。)</p>
+            <p>⚠️ <strong>注意：</strong> 不能寫成 "The more you spend time..." (❌)</p>
+        </div>
+    </div>
+
+    <!-- 3. Grammar 2: So that -->
+    <div id="grammar2" class="content-section">
+        <h2>📗 文法二：So that (表目的)</h2>
+        <p>用來表示做某個動作的「目的」，意思是「為了......」、「以便......」。</p>
+
+        <div class="formula-box">
+            S + V ... <strong>so that</strong> + S + <strong>can/may/will</strong> + V ...
+        </div>
+
+        <h3>1. 核心概念</h3>
+        <p>後面接的子句通常會搭配助動詞 (can, could, may, might, will, would) 來表示「能夠」達成某個目的。</p>
+        <div class="example-box">
+            <p><strong>Example:</strong></p>
+            <p>Shops play slow music <strong>so that</strong> customers <strong>will</strong> stay longer.</p>
+            <p>(商店播放慢節奏音樂，以便顧客會待久一點。)</p>
+        </div>
+        <div class="example-box">
+            <p><strong>Example:</strong></p>
+            <p>I study hard <strong>so that</strong> I <strong>can</strong> go to a good college.</p>
+            <p>(我努力讀書，是為了能上一所好大學。)</p>
+        </div>
+
+        <h3>2. 同義替換 (Extension)</h3>
+        <p>想要換個口味？你可以用不定詞片語來改寫 (注意主詞一致性)：</p>
+        <ul>
+            <li><strong>in order to + V</strong> (為了...)</li>
+            <li><strong>so as to + V</strong> (為了...)</li>
+        </ul>
+        <div class="example-box">
+            <p>He works early <strong>so that he can</strong> avoid traffic.</p>
+            <p>= He works early <strong>in order to</strong> avoid traffic.</p>
+        </div>
+
+        <div class="trap-box">
+            <div class="trap-title">🚫 陷阱警示：So that vs. So... that</div>
+            <p>這兩個長很像，但意思完全不同，段考超愛考！</p>
+            <p><strong>1. so that (連在一起) = 目的 (為了)</strong></p>
+            <p>👉 I wake up early <strong>so that</strong> I can catch the bus. (為了搭公車)</p>
+            <hr style="border:0; border-top:1px dashed #ccc; margin:10px 0;">
+            <p><strong>2. so + Adj/Adv + that (分開) = 結果 (如此...以至於...)</strong></p>
+            <p>👉 I was <strong>so</strong> tired <strong>that</strong> I fell asleep immediately. (太累了，以至於秒睡)</p>
+        </div>
+    </div>
+
+    <!-- 4. Basic Quiz -->
+    <div id="quiz-basic" class="content-section">
+        <h2>⚔️ 基礎練習 (Basic Training)</h2>
+        <p>觀念確認：請選擇正確答案或填入正確形式。</p>
+
+        <!-- Q1 -->
+        <div class="quiz-item">
+            <div class="question">1. The ______ you study, the better grades you will get. (hard)</div>
+            <input type="text" class="input-answer" id="q1-input" placeholder="填入比較級">
+            <button class="check-btn" onclick="checkText('q1', 'harder')">Check</button>
+            <div id="q1-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-item">
+            <div class="question">2. The more ______ the car is, the faster it goes. (expensive)</div>
+            <input type="text" class="input-answer" id="q2-input" placeholder="填入比較級">
+            <button class="check-btn" onclick="checkText('q2', 'expensive')">Check</button>
+            <div id="q2-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-item">
+            <div class="question">3. The ______, the better. (soon)</div>
+            <input type="text" class="input-answer" id="q3-input" placeholder="填入比較級">
+            <button class="check-btn" onclick="checkText('q3', 'sooner')">Check</button>
+            <div id="q3-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-item">
+            <div class="question">4. The more you eat, the ______ you get. (fat)</div>
+            <input type="text" class="input-answer" id="q4-input" placeholder="填入比較級">
+            <button class="check-btn" onclick="checkText('q4', 'fatter')">Check</button>
+            <div id="q4-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-item">
+            <div class="question">5. I wear glasses ______ I can see clearly.</div>
+            <div class="options">
+                <label><input type="radio" name="bq5" value="A"> A. so that</label>
+                <label><input type="radio" name="bq5" value="B"> B. in order to</label>
+                <label><input type="radio" name="bq5" value="C"> C. because</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('bq5', 'A', 'q5-fb')">Check</button>
+            <div id="q5-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-item">
+            <div class="question">6. He ran fast so that he ______ catch the train. (選出適合的助動詞)</div>
+            <div class="options">
+                <label><input type="radio" name="bq6" value="A"> A. is</label>
+                <label><input type="radio" name="bq6" value="B"> B. could</label>
+                <label><input type="radio" name="bq6" value="C"> C. does</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('bq6', 'B', 'q6-fb')">Check</button>
+            <div id="q6-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-item">
+            <div class="question">7. The older he gets, the ______ he looks. (handsome)</div>
+            <input type="text" class="input-answer" id="q7-input" placeholder="More or -er?">
+            <button class="check-btn" onclick="checkText('q7', 'more handsome')">Check</button>
+            <div id="q7-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-item">
+            <div class="question">8. Please speak louder so that everyone ______ hear you.</div>
+            <div class="options">
+                <label><input type="radio" name="bq8" value="A"> A. can</label>
+                <label><input type="radio" name="bq8" value="B"> B. to</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('bq8', 'A', 'q8-fb')">Check</button>
+            <div id="q8-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="quiz-item">
+            <div class="question">9. "The more, the ______." (人越多越好)</div>
+            <input type="text" class="input-answer" id="q9-input" placeholder="m 開頭">
+            <button class="check-btn" onclick="checkText('q9', 'merrier')">Check</button>
+            <div id="q9-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="quiz-item">
+            <div class="question">10. Convenience stores put milk at the back ______ customers walk through the whole store.</div>
+            <div class="options">
+                <label><input type="radio" name="bq10" value="A"> A. so that</label>
+                <label><input type="radio" name="bq10" value="B"> B. such that</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('bq10', 'A', 'q10-fb')">Check</button>
+            <div id="q10-fb" class="feedback"></div>
+        </div>
+    </div>
+
+    <!-- 5. Advanced Quiz -->
+    <div id="quiz-adv" class="content-section">
+        <h2>💀 進階挑戰 (Advanced Challenge)</h2>
+        <p>這裡包含合併句子、翻譯以及陷阱題。</p>
+
+        <!-- A1 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">合併</span> 1. Combine: You climb higher. It becomes colder.</div>
+            <div class="question" style="font-weight:normal; font-size:0.9rem;">(The higher you climb, ...)</div>
+            <input type="text" class="input-answer" id="aq1-input" placeholder="Type the full sentence">
+            <button class="check-btn" onclick="checkSentence('aq1', 'The higher you climb, the colder it becomes.')">Check</button>
+            <div id="aq1-fb" class="feedback"></div>
+        </div>
+
+        <!-- A2 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">翻譯</span> 2. 你練習得愈多，你就做得愈好。</div>
+            <div class="question" style="font-weight:normal; font-size:0.9rem;">(The more you practice, ...)</div>
+            <input type="text" class="input-answer" id="aq2-input" placeholder="Type the full sentence">
+            <button class="check-btn" onclick="checkSentence('aq2', 'The more you practice, the better you do.')">Check</button>
+            <div id="aq2-fb" class="feedback"></div>
+        </div>
+
+        <!-- A3 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">陷阱</span> 3. The ______ products they buy, the happier the owner is. (many)</div>
+            <div class="question" style="font-weight:normal; font-size:0.9rem;">Hint: 修飾 products</div>
+            <input type="text" class="input-answer" id="aq3-input" placeholder="many 的比較級">
+            <button class="check-btn" onclick="checkText('aq3', 'more')">Check</button>
+            <div id="aq3-fb" class="feedback"></div>
+        </div>
+
+        <!-- A4 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">翻譯</span> 4. 這些商品被放在與視線同高，以便顧客能看到它們。</div>
+            <div class="question" style="font-weight:normal; font-size:0.9rem;">The products are placed at eye level so that...</div>
+            <input type="text" class="input-answer" id="aq4-input" placeholder="complete the sentence">
+            <button class="check-btn" onclick="checkSentence('aq4', 'The products are placed at eye level so that customers can see them.')">Check</button>
+            <div id="aq4-fb" class="feedback"></div>
+        </div>
+
+        <!-- A5 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">改寫</span> 5. Use "in order to" to rewrite: <br>"He ran fast so that he could win."</div>
+            <input type="text" class="input-answer" id="aq5-input" placeholder="He ran fast in order to...">
+            <button class="check-btn" onclick="checkSentence('aq5', 'He ran fast in order to win.')">Check</button>
+            <div id="aq5-fb" class="feedback"></div>
+        </div>
+
+        <!-- A6 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">分辨</span> 6. He was ______ busy that he forgot to eat. (so / so that)</div>
+            <div class="options">
+                <label><input type="radio" name="aq6" value="A"> A. so</label>
+                <label><input type="radio" name="aq6" value="B"> B. so that</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('aq6', 'A', 'aq6-fb')">Check</button>
+            <div id="aq6-fb" class="feedback"></div>
+        </div>
+
+        <!-- A7 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">翻譯</span> 7. 愈快愈好。(Short phrase)</div>
+            <input type="text" class="input-answer" id="aq7-input" placeholder="">
+            <button class="check-btn" onclick="checkSentence('aq7', 'The sooner, the better.')">Check</button>
+            <div id="aq7-fb" class="feedback"></div>
+        </div>
+
+        <!-- A8 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">陷阱</span> 8. The harder you work, ______ you get.</div>
+            <div class="options">
+                <label><input type="radio" name="aq8" value="A"> A. the more lucky</label>
+                <label><input type="radio" name="aq8" value="B"> B. the luckier</label>
+                <label><input type="radio" name="aq8" value="C"> C. more</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('aq8', 'B', 'aq8-fb')">Check</button>
+            <div id="aq8-fb" class="feedback"></div>
+        </div>
+
+        <!-- A9 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">挑戰</span> 9. Make the sentence: (dangerous / the mission / is), (high / the reward / should be).</div>
+            <input type="text" class="input-answer" id="aq9-input" placeholder="The... , the...">
+            <button class="check-btn" onclick="checkSentence('aq9', 'The more dangerous the mission is, the higher the reward should be.')">Check</button>
+            <div id="aq9-fb" class="feedback"></div>
+        </div>
+
+        <!-- A10 -->
+        <div class="quiz-item">
+            <div class="question"><span class="badge">助動詞</span> 10. She saved money so that she ______ buy a new house next year. (could / can / will)</div>
+            <div class="options">
+                <label><input type="radio" name="aq10" value="A"> A. could (過去式)</label>
+                <label><input type="radio" name="aq10" value="B"> B. can / will (現在/未來)</label>
+            </div>
+            <button class="check-btn" onclick="checkRadio('aq10', 'A', 'aq10-fb')">Check</button>
+            <div id="aq10-fb" class="feedback"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    <p>Lesson 8 Grammar Station | 祝你段考 The harder you study, the higher score you get! 💯</p>
+</footer>
+
+<script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(sec => sec.classList.remove('active'));
+
+        // Deactivate all buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Show target
+        document.getElementById(tabId).classList.add('active');
+        
+        // Highlight button
+        const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabId));
+        if(activeBtn) activeBtn.classList.add('active');
+    }
+
+    // Checking Logic for Text Inputs (Single word/Short phrase)
+    function checkText(inputId, correctAns) {
+        const userVal = document.getElementById(inputId + "-input").value.trim().toLowerCase();
+        const feedback = document.getElementById(inputId + "-fb");
+        const correctVal = document.getElementById(inputId + "-input").value.trim().toLowerCase().includes(correctAns); 
+        // Note: Simplified logic. For specific text check:
+        
+        feedback.style.display = "block";
+        if (userVal === correctAns.toLowerCase()) {
+            feedback.className = "feedback correct";
+            feedback.innerHTML = "✅ Correct!";
+        } else if (userVal.includes(correctAns.toLowerCase())) {
+             // For cases like "more expensive" where user might type parts
+             feedback.className = "feedback correct";
+             feedback.innerHTML = "✅ Correct!";
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerHTML = "❌ Try again. Answer: " + correctAns;
+        }
+    }
+
+    // Checking Logic for Radio Buttons
+    function checkRadio(name, correctVal, fbId) {
+        const options = document.getElementsByName(name);
+        let selected = null;
+        for (const opt of options) {
+            if (opt.checked) {
+                selected = opt.value;
+                break;
+            }
+        }
+        
+        const feedback = document.getElementById(fbId);
+        feedback.style.display = "block";
+
+        if (!selected) {
+            feedback.className = "feedback";
+            feedback.style.backgroundColor = "#fff3cd";
+            feedback.innerHTML = "⚠️ Please select an option.";
+            return;
+        }
+
+        if (selected === correctVal) {
+            feedback.className = "feedback correct";
+            feedback.innerHTML = "✅ Correct!";
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerHTML = "❌ Incorrect. Try again!";
+        }
+    }
+
+    // Checking Logic for Full Sentences (Loose match for punctuation/case)
+    function checkSentence(inputId, correctAns) {
+        const userVal = document.getElementById(inputId + "-input").value.trim();
+        const feedback = document.getElementById(inputId + "-fb");
+        
+        // Normalize: remove punctuation, lowercase, extra spaces
+        const normUser = userVal.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+        const normAns = correctAns.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+
+        feedback.style.display = "block";
+        if (normUser === normAns) {
+            feedback.className = "feedback correct";
+            feedback.innerHTML = "✅ Excellent! (" + correctAns + ")";
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerHTML = "❌ Keep trying. <br>Ref: " + correctAns;
+        }
+    }
+</script>
+
+</body>
+</html>
