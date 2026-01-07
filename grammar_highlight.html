@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學測英文文法衝刺總複習</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: #eef2f5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        /* Content Areas */
+        .content-section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Grammar Notes (Accordion) */
+        .grammar-item {
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .grammar-header {
+            background: #f8f9fa;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .grammar-header:hover {
+            background: #e9ecef;
+        }
+
+        .grammar-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .grammar-content.open {
+            display: block;
+        }
+
+        .keyword {
+            color: #d35400;
+            font-weight: bold;
+            background: #fae5d3;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .tip-box {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Quiz Styles */
+        .question-card {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 12px;
+            border: 2px solid #e1e4e8;
+            border-radius: 8px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option-btn.wrong {
+            background-color: #f8d7da;
+            border-color: var(--error-color);
+            color: #721c24;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .tab-btn { font-size: 0.9rem; padding: 10px; }
+            header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>學測英文文法重點複習</h1>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="switchTab('notes')">📚 文法重點筆記</button>
+        <button class="tab-btn" onclick="switchTab('quiz')">✍️ 實戰模擬題 (12題)</button>
+    </nav>
+
+    <main>
+        <!-- Tab 1: 文法筆記 -->
+        <div id="notes-view" class="content-section active">
+            
+            <div class="grammar-item">
+                <div class="grammar-header" onclick="toggleAccordion(this)">
+                    1. 分詞構句 (V-ing vs V-pp) <span style="font-size:1.2rem">+</span>
+                </div>
+                <div class="grammar-content">
+                    <p>這是學測必考 No.1。解題關鍵是「找主詞」。</p>
+                    <ul>
+                        <li><strong>主動 (Active)</strong> ➜ <span class="keyword">V-ing</span> (例：bringing, causing)</li>
+                        <li><strong>被動 (Passive)</strong> ➜ <span class="keyword">V-pp</span> (例：built, written)</li>
+                    </ul>
+                    <div class="tip-box">
+                        💡 <strong>口訣：</strong>看到逗號後的空格，先回頭找句子的「主詞」是誰，然後判斷是它「做動作」還是「被做動作」。
+                    </div>
+                </div>
+            </div>
+
+            <div class="grammar-item">
+                <div class="grammar-header" onclick="toggleAccordion(this)">
+                    2. 關係詞與名詞子句 (Who/Which/What) <span style="font-size:1.2rem">+</span>
+                </div>
+                <div class="grammar-content">
+                    <p>搞清楚 What 和 That 的差別：</p>
+                    <ul>
+                        <li><strong>What</strong> = The thing that。<br>使用時機：前面<span class="keyword">沒有先行詞</span> + 後面<span class="keyword">句子不完整</span>。</li>
+                        <li><strong>Which/That</strong>：前面有名詞 (先行詞)。</li>
+                        <li><strong>逗號後</strong>：絕對不能用 That，要用 Which。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grammar-item">
+                <div class="grammar-header" onclick="toggleAccordion(this)">
+                    3. 連接詞 vs. 介系詞 <span style="font-size:1.2rem">+</span>
+                </div>
+                <div class="grammar-content">
+                    <p>這是綜合測驗 (Cloze) 最常出現的陷阱。</p>
+                    <ul>
+                        <li><strong>接子句 (S + V)</strong> ➜ 使用連接詞<br>例如：<span class="keyword">Although</span>, Because, While</li>
+                        <li><strong>接名詞 (N / V-ing)</strong> ➜ 使用介系詞<br>例如：<span class="keyword">Despite</span>, In spite of, Because of</li>
+                    </ul>
+                    <div class="tip-box">
+                        ⚠️ <strong>必背：</strong> Although (雖然) 接句子；Despite (雖然) 接名詞。意思一樣，用法不同！
+                    </div>
+                </div>
+            </div>
+
+            <div class="grammar-item">
+                <div class="grammar-header" onclick="toggleAccordion(this)">
+                    4. 時態判斷 (完成式 vs 過去式) <span style="font-size:1.2rem">+</span>
+                </div>
+                <div class="grammar-content">
+                    <p>利用時間副詞來當作解題線索：</p>
+                    <ul>
+                        <li><strong>Since (自從)</strong> ➜ 搭配 <span class="keyword">現在完成式 (have/has + pp)</span>。</li>
+                        <li><strong>By the time (到了...時候)</strong>：
+                            <ul>
+                                <li>接過去時間 ➜ 搭配 <span class="keyword">過去完成式 (had + pp)</span>。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grammar-item">
+                <div class="grammar-header" onclick="toggleAccordion(this)">
+                    5. 假設語氣 (Subjunctive) <span style="font-size:1.2rem">+</span>
+                </div>
+                <div class="grammar-content">
+                    <p>學測最愛考「與過去事實相反」。</p>
+                    <ul>
+                        <li><strong>與現在相反</strong>：If + S + <span class="keyword">Were/V-ed</span> ..., S + would + V.</li>
+                        <li><strong>與過去相反</strong>：If + S + <span class="keyword">had + pp</span> ..., S + would + <span class="keyword">have + pp</span>.</li>
+                    </ul>
+                    <div class="tip-box">
+                        💡 看到 "should have + pp" 代表「早該做但沒做」。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tab 2: 測驗區 -->
+        <div id="quiz-view" class="content-section">
+            <div id="quiz-container">
+                <!-- Javascript will insert questions here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2024 English Tutor | GSAT Prep
+    </footer>
+</div>
+
+<script>
+    // 題目資料庫
+    const questions = [
+        {
+            q: "1. The typhoon approached the island, ________ heavy rain and strong winds.",
+            options: ["brought", "bringing", "brings", "brought by"],
+            ans: 1,
+            exp: "<strong>解析：(B) bringing</strong><br>主詞是 Typhoon，颱風「主動」帶來雨水，屬於主動分詞構句，故用 V-ing。"
+        },
+        {
+            q: "2. ________ in 1995, the library is the oldest building in the town.",
+            options: ["Building", "Built", "To build", "Having built"],
+            ans: 1,
+            exp: "<strong>解析：(B) Built</strong><br>主詞是 Library，圖書館是「被建造」的，省略了 which was，故用 V-pp 開頭。"
+        },
+        {
+            q: "3. Many students find the math problem ________.",
+            options: ["confused", "confusing", "confuse", "confusion"],
+            ans: 1,
+            exp: "<strong>解析：(B) confusing</strong><br>修飾事物 (math problem) 令人感到困惑用 V-ing；如果是修飾人感到困惑才用 confused。"
+        },
+        {
+            q: "4. Scientists are studying ________ causes the disease to spread so quickly.",
+            options: ["that", "which", "what", "where"],
+            ans: 2,
+            exp: "<strong>解析：(C) what</strong><br>空格後缺主詞，空格前沒有先行詞。What = The thing that。"
+        },
+        {
+            q: "5. The technology ________ we rely on is evolving rapidly.",
+            options: [", that", "what", ", which", "that"],
+            ans: 3,
+            exp: "<strong>解析：(D) that</strong><br>先行詞是 technology，且句子沒有逗號，屬於限定用法。What 前面不能有先行詞。"
+        },
+        {
+            q: "6. This is the house ________ Shakespeare was born.",
+            options: ["which", "in which", "that", "on which"],
+            ans: 1,
+            exp: "<strong>解析：(B) in which</strong><br>House 是地點，且後方子句完整（Shakespeare was born）。In which = Where。"
+        },
+        {
+            q: "7. ________ the heavy traffic, we arrived at the airport on time.",
+            options: ["Although", "Despite", "Because", "However"],
+            ans: 1,
+            exp: "<strong>解析：(B) Despite</strong><br>Heavy traffic 是名詞片語，不能接連接詞 Although。Despite (介系詞) + N。"
+        },
+        {
+            q: "8. The game was canceled ________ it rained heavily all day.",
+            options: ["because of", "due to", "because", "owing to"],
+            ans: 2,
+            exp: "<strong>解析：(C) because</strong><br>It rained... 是完整的句子 (S+V)，必須用連接詞 because。"
+        },
+        {
+            q: "9. Since he moved to Taipei, he ________ as a software engineer.",
+            options: ["works", "worked", "has worked", "had worked"],
+            ans: 2,
+            exp: "<strong>解析：(C) has worked</strong><br>看到關鍵字 Since (自從)，主要子句通常搭配「現在完成式」。"
+        },
+        {
+            q: "10. By the time the police arrived, the thief ________ away.",
+            options: ["has run", "had run", "runs", "was running"],
+            ans: 1,
+            exp: "<strong>解析：(B) had run</strong><br>警察到是過去式，小偷跑掉是「比過去更早」發生的動作，故用過去完成式。"
+        },
+        {
+            q: "11. If I ________ you, I would accept the offer immediately.",
+            options: ["am", "was", "were", "be"],
+            ans: 2,
+            exp: "<strong>解析：(C) were</strong><br>與現在事實相反的假設語氣，Be 動詞不論人稱一律用 were。"
+        },
+        {
+            q: "12. If he ________ harder for the exam, he would have passed it last week.",
+            options: ["studied", "has studied", "studies", "had studied"],
+            ans: 3,
+            exp: "<strong>解析：(D) had studied</strong><br>與過去事實相反。後句是 would have passed，故前句用 If ... had + pp。"
+        }
+    ];
+
+    // 初始化測驗
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+        
+        questions.forEach((q, index) => {
+            html += `
+                <div class="question-card">
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <button class="option-btn" onclick="checkAnswer(this, ${index}, ${i})">${String.fromCharCode(65+i)}. ${opt}</button>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    // 檢查答案
+    function checkAnswer(btn, qIndex, userChoice) {
+        const q = questions[qIndex];
+        const parent = btn.parentElement;
+        const feedbackDiv = document.getElementById(`feedback-${qIndex}`);
+        
+        // 鎖定該題所有按鈕
+        const buttons = parent.getElementsByClassName('option-btn');
+        for(let b of buttons) {
+            b.classList.add('disabled');
+            b.onclick = null; // 移除點擊事件
+        }
+
+        // 判斷對錯
+        if (userChoice === q.ans) {
+            btn.classList.add('correct');
+            feedbackDiv.style.backgroundColor = "#d4edda";
+            feedbackDiv.style.color = "#155724";
+            feedbackDiv.innerHTML = "✅ <strong>Correct!</strong> <br>" + q.exp;
+        } else {
+            btn.classList.add('wrong');
+            // 顯示正確答案
+            buttons[q.ans].classList.add('correct');
+            feedbackDiv.style.backgroundColor = "#fff3cd";
+            feedbackDiv.style.color = "#856404";
+            feedbackDiv.innerHTML = "❌ <strong>Incorrect.</strong> <br>" + q.exp;
+        }
+        
+        feedbackDiv.style.display = 'block';
+    }
+
+    // 切換分頁
+    function switchTab(tabName) {
+        // 隱藏所有內容
+        document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+        // 移除所有按鈕 active
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        // 顯示目標內容
+        if(tabName === 'notes') {
+            document.getElementById('notes-view').classList.add('active');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        } else {
+            document.getElementById('quiz-view').classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+    }
+
+    // 手風琴效果
+    function toggleAccordion(header) {
+        const content = header.nextElementSibling;
+        const isOpen = content.classList.contains('open');
+        
+        // 關閉其他所有打開的 (Optional: 如果希望一次只開一個)
+        // document.querySelectorAll('.grammar-content').forEach(c => c.classList.remove('open'));
+
+        if(!isOpen) {
+            content.classList.add('open');
+            header.querySelector('span').innerText = '-';
+        } else {
+            content.classList.remove('open');
+            header.querySelector('span').innerText = '+';
+        }
+    }
+
+    // 啟動
+    initQuiz();
+</script>
+
+</body>
+</html>

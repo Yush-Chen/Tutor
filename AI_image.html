@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Promise and Perils of AI Image Generation</title>
+    <style>
+        :root {
+            /* Theme: Tech / AI / Future */
+            --primary-color: #2962ff; /* Tech Blue */
+            --secondary-color: #00b8d4; /* Cyan Accent */
+            --accent-color: #ff3d00; /* Alert Orange for perils */
+            --bg-color: #f5f7fa;
+            --text-color: #263238;
+            --card-bg: #ffffff;
+            --border-color: #cfd8dc;
+            --highlight: #e3f2fd; /* Light Blue highlight */
+            --ref-word-color: #546e7a;
+            --correct: #00c853;
+            --wrong: #d50000;
+            --header-grad: linear-gradient(135deg, #1a237e, #0091ea);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #448aff;
+            --secondary-color: #18ffff;
+            --accent-color: #ff6e40;
+            --bg-color: #0d1117; /* GitHub Dark Dim */
+            --text-color: #c9d1d9;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --highlight: #1f6feb; /* Dark mode highlight */
+            --ref-word-color: #8b949e;
+        }
+
+        body {
+            font-family: "Segoe UI", "Roboto", "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            background: var(--header-grad);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+        header p { margin-top: 8px; opacity: 0.9; font-weight: 300; }
+
+        .controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        button.icon-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        button.icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Tabs */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+            background-color: rgba(41, 98, 255, 0.05);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: none;
+            padding-bottom: 60px;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Article Styles */
+        .article-text {
+            font-size: 1.15rem;
+            text-align: justify;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .article-text p { margin-bottom: 1.5em; }
+
+        .vocab-highlight {
+            font-weight: bold;
+            color: var(--primary-color);
+            cursor: help;
+        }
+
+        .ref-word {
+            font-size: 0.85em;
+            color: var(--ref-word-color);
+            background-color: rgba(0,0,0,0.04);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+            font-weight: normal;
+        }
+
+        .phrase-highlight {
+            color: var(--secondary-color);
+            font-weight: bold;
+            border-bottom: 2px dashed var(--secondary-color);
+        }
+
+        /* Vocab Table */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--card-bg);
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: rgba(0,0,0,0.02); }
+
+        /* Grammar Section */
+        .grammar-point {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .grammar-title {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .example {
+            font-style: italic;
+            color: var(--text-color);
+            margin-top: 8px;
+            padding-left: 15px;
+            border-left: 3px solid var(--border-color);
+            opacity: 0.9;
+        }
+        
+        .word-builder {
+            background: linear-gradient(to right, rgba(0, 184, 212, 0.1), transparent);
+            border: 1px solid var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: var(--card-bg);
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .question-box {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(0,0,0,0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .options label:hover {
+            background: rgba(0,0,0,0.06);
+            border-color: var(--secondary-color);
+        }
+
+        .options input {
+            margin-right: 12px;
+            accent-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: rgba(0, 200, 83, 0.1);
+            color: var(--correct);
+            border: 1px solid var(--correct);
+            display: block;
+        }
+
+        .feedback.wrong {
+            background-color: rgba(213, 0, 0, 0.1);
+            color: var(--wrong);
+            border: 1px solid var(--wrong);
+            display: block;
+        }
+        
+        [data-theme="dark"] .feedback.correct { color: #69f0ae; border-color: #00c853; }
+        [data-theme="dark"] .feedback.wrong { color: #ff8a80; border-color: #d50000; }
+
+        .btn-check {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-check:hover {
+            background-color: #1565c0;
+            transform: translateY(-1px);
+        }
+        
+        h2 { 
+            border-left: 5px solid var(--primary-color); 
+            padding-left: 15px; 
+            margin-top: 40px; 
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .article-text { padding: 20px; font-size: 1rem; }
+            .tab { padding: 12px 15px; font-size: 0.9rem; flex: 1; text-align: center; }
+            th, td { font-size: 0.9rem; padding: 10px; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>The Promise and Perils of AI Image Generation</h1>
+    <p>Unit 11: AI 圖像生成的雙面刃：潛力與風險共存</p>
+    <div class="controls">
+        <button class="icon-btn" onclick="toggleTheme()">🌗 Mode</button>
+        <button class="icon-btn" onclick="adjustFont(1)">A+</button>
+        <button class="icon-btn" onclick="adjustFont(-1)">A-</button>
+    </div>
+</header>
+
+<div class="tab-container">
+    <div class="tab active" onclick="switchTab('tab1')">文章全文</div>
+    <div class="tab" onclick="switchTab('tab2')">單字與測驗</div>
+    <div class="tab" onclick="switchTab('tab3')">文法與句型</div>
+    <div class="tab" onclick="switchTab('tab4')">綜合練習題</div>
+</div>
+
+<!-- TAB 1: 文章全文 -->
+<div id="tab1" class="content active">
+    <div class="article-text" id="articleContent">
+        <p>Have you ever imagined creating a painting or photograph just by typing a few words into a computer? Thanks to artificial intelligence (AI) image <strong class="vocab-highlight">generation</strong>, now you can. This powerful technology is already changing how we think about art, creativity, and digital media.</p>
+
+        <p>Generative AI image systems work by analyzing millions of existing pictures. They learn patterns, colors, shapes, and <strong class="vocab-highlight">artistic</strong> styles from photographs, paintings, and drawings. When you type in a description like "the sun rising over mountains," the AI uses what it has learned to produce a new image that matches your words in just seconds.</p>
+
+        <p>The process is remarkably <strong class="vocab-highlight">sophisticated</strong>. The AI <span class="phrase-highlight">breaks down</span> your description and intelligently combines <strong class="vocab-highlight">visual</strong> elements. For example, if you request "a cat wearing a hat," the system understands what cats look like, what hats look like, and how to convincingly <span class="ref-word">(adv. 令人信服地)</span> place them together.</p>
+
+        <p>AI image generation offers significant benefits across many fields. It saves time and money by allowing artists to test ideas quickly and efficiently. It makes art creation <strong class="vocab-highlight">accessible</strong> to anyone with imagination, even without traditional artistic training. Businesses can design ads or products, students can <strong class="vocab-highlight">illustrate</strong> <strong class="vocab-highlight">assignments</strong>, and writers can visualize their characters with ease.</p>
+
+        <p>However, along with its benefits, AI image generation raises serious concerns that cannot be ignored. One major issue is <strong class="vocab-highlight">copyrights</strong>. Because AI systems learn from existing artworks, many argue that they rely on artists' creations without permission or proper attribution <span class="ref-word">(n. 歸因；出處)</span>. A clear example occurred in March 2025 with the viral <span class="ref-word">(adj. 爆紅的；瘋傳的)</span> "Ghiblification" trend, where people asked AI tools to reimagine everyday scenes in the style of Studio Ghibli films. While the results were charming, critics pointed out that the AI was reproducing <strong class="vocab-highlight">distinctive</strong> artistic elements without crediting or <strong class="vocab-highlight">compensating</strong> the original creators.</p>
+
+        <p>Job security is another pressing <span class="ref-word">(adj. 急迫的；迫切的)</span> concern. Many professional illustrators fear losing work as companies turn to faster, cheaper AI alternatives. Equally troubling is the risk of fake images. AI can generate <strong class="vocab-highlight">realistic</strong> <strong class="vocab-highlight">photographic</strong> images of events that never happened, which could fuel <span class="ref-word">(v. 加劇；助長)</span> false news reports or online scams <span class="ref-word">(n. 詐騙)</span>. This ability is already making it harder to trust what we see online.</p>
+
+        <p>AI image generation is undeniably <span class="ref-word">(adv. 無可否認地)</span> a powerful tool with exciting potential. Yet to <span class="phrase-highlight">make the most of</span> it, society must use it wisely. Only by finding the right balance between <strong class="vocab-highlight">innovation</strong> and ethics can we ensure fairness and <strong class="vocab-highlight">prosperity</strong> in our digital future.</p>
+    </div>
+</div>
+
+<!-- TAB 2: 單字介紹 -->
+<div id="tab2" class="content">
+    <h2>Vocabulary List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Meaning</th>
+                <th>Magazine Example</th>
+            </tr>
+        </thead>
+        <tbody id="vocabTableBody">
+            <!-- Populated by JS -->
+        </tbody>
+    </table>
+
+    <h2>Vocabulary Quiz</h2>
+    <p>Test your knowledge with these mixed questions (Definition & New Context).</p>
+    <div id="vocabQuizContainer" class="quiz-container">
+        <!-- Populated by JS -->
+    </div>
+</div>
+
+<!-- TAB 3: 文法講解 -->
+<div id="tab3" class="content">
+    <h2>Language Spotlight</h2>
+    
+    <div class="grammar-point">
+        <div class="grammar-title">1. break down 分解、拆分</div>
+        <p><strong>用法：</strong> break down sth (into N.) / break sth down (into N.)</p>
+        <p>break down 可作及物或不及物動詞，後面可接 into N.，表示「（將……）分解成更簡單的物質；（將……）分成幾個部分或類組」。</p>
+        <div class="example">Sunlight can break plastic down into smaller and smaller pieces over time.</div>
+        <div class="example">After you swallow food, it gradually breaks down in your digestive system.</div>
+        
+        <p style="margin-top:10px;"><strong>補充：break down 作不及物動詞時的意義：</strong></p>
+        <ul style="margin-top:5px; padding-left:20px;">
+            <li>(事物) 故障、失效： <br><em>The old car finally broke down completely.</em></li>
+            <li>(人) 情緒崩潰、失控： <br><em>George broke down and cried when he heard his mother had been seriously injured.</em></li>
+        </ul>
+    </div>
+
+    <div class="grammar-point">
+        <div class="grammar-title">2. make the most of sth 充分利用……；將……物盡其用</div>
+        <p><strong>同義詞：</strong> get the most out of sth</p>
+        <div class="example">We should make the most of the sunny weather today and go for a long hike.</div>
+    </div>
+
+    <h2>Sentence Patterns</h2>
+    <div class="grammar-point" style="border-left-color: var(--accent-color);">
+        <div class="grammar-title">Only + 副詞/介系詞片語 + 助動詞/be動詞 + S... (倒裝句)</div>
+        <p>only 修飾副詞、副詞子句或介系詞片語並置於句首時，句子需倒裝，即將助動詞或 be 動詞置於主詞之前。若為一般動詞，則需依時態及主詞人稱加上適當的助動詞 (do/does/did)。</p>
+        <p>在此句中，only 修飾由 by finding the right balance... 形成的介系詞片語，因此需將助動詞 can 移至主詞 we 前面。</p>
+        <div class="example">Only by finding the right balance between innovation and ethics <strong>can we</strong> ensure fairness and prosperity.</div>
+        <div class="example">Only then <strong>did</strong> Benson realize he had been deceived.</div>
+        <div class="example">Only when people get sick <strong>do</strong> they truly realize the importance of health.</div>
+    </div>
+
+    <div class="word-builder">
+        <h3>Word Builder: -fication</h3>
+        <p>-fication 表示「使成為某種狀態的過程或結果」，常與動詞詞根結合構成名詞。第 42 行的 Ghiblification 將 Ghibli (吉卜力) 視為動詞詞根，加上字尾 -fication 即表示「吉卜力化」。</p>
+        <ul>
+            <li><strong>justification</strong> [n.] 正當理由；辯解 (from justify)</li>
+            <li><strong>modification</strong> [n.] 修改；變更 (from modify)</li>
+            <li><strong>clarification</strong> [n.] 澄清；說明 (from clarify)</li>
+            <li><strong>simplification</strong> [n.] 簡化 (from simplify)</li>
+        </ul>
+    </div>
+
+    <h2>Grammar Check</h2>
+    <div id="grammarQuizContainer" class="quiz-container"></div>
+</div>
+
+<!-- TAB 4: 練習題 -->
+<div id="tab4" class="content">
+    <h2>I. Magazine Integrated Questions</h2>
+    <div id="magQuizContainer" class="quiz-container"></div>
+
+    <h2>II. GSAT Practice: Cloze Test (綜合測驗)</h2>
+    <div class="article-text" style="font-size: 1rem;">
+        <p>Artificial intelligence has revolutionized how we create images. By typing simple text descriptions, anyone can generate complex visuals in seconds. This technology makes art __1__ to people without formal training and helps businesses visualize ideas quickly. However, the rise of AI art is not without its perils. Since AI models are trained on existing works, they often raise __2__ issues regarding the ownership of styles and ideas. Furthermore, professional artists worry that AI might replace them, leading to a lack of job security. Another danger is the creation of __3__ fake images, which can be used to spread misinformation. To ensure a positive future, we must balance technological __4__ with ethical responsibility. Only by doing so __5__ enjoy the benefits of AI while protecting human creativity.</p>
+    </div>
+    <div id="clozeQuizContainer" class="quiz-container"></div>
+
+    <h2>III. GSAT Practice: Reading Comprehension (閱讀測驗)</h2>
+    <div id="readingQuizContainer" class="quiz-container"></div>
+</div>
+
+<script>
+    // --- Data ---
+    const vocabList = [
+        { 
+            word: "generation", pos: "[n.]", meaning: "(能源、想法等) 產生、生成；世代", 
+            sentence: "The generation of new and original ideas is an important part of all creative work.",
+            quizSentence: "Solar power plays a key role in the _____ of clean electricity for the city."
+        },
+        { 
+            word: "artistic", pos: "[adj.]", meaning: "藝術的；具有藝術天賦或鑑賞力的", 
+            sentence: "Marvin decided to take a course on the artistic traditions of ancient Greece.",
+            quizSentence: "Her _____ talent was obvious from the beautiful paintings she created as a child."
+        },
+        { 
+            word: "sophisticated", pos: "[adj.]", meaning: "精密複雜的；老練、世故的", 
+            sentence: "This phone comes with a number of highly sophisticated and advanced security features.",
+            quizSentence: "Modern airplanes are equipped with _____ computer systems to ensure safety."
+        },
+        { 
+            word: "visual", pos: "[adj.]", meaning: "視覺的；視力的", 
+            sentence: "Most textbooks include visual aids in order to help students better understand the information.",
+            quizSentence: "Movies are primarily a _____ medium, relying on images to tell a story."
+        },
+        { 
+            word: "accessible", pos: "[adj.]", meaning: "可得到的；可進入的；易懂的", 
+            sentence: "Online software now makes video editing more accessible to all beginners.",
+            quizSentence: "The new library ramp makes the building _____ to people in wheelchairs."
+        },
+        { 
+            word: "illustrate", pos: "[v.]", meaning: "(替書籍等) 畫插畫；(用例子) 說明", 
+            sentence: "Every chapter in this book is illustrated with several detailed and beautiful drawings.",
+            quizSentence: "Please allow me to _____ my point with a simple example."
+        },
+        { 
+            word: "assignment", pos: "[n.]", meaning: "(學業或工作方面的) 功課、任務", 
+            sentence: "Elliot's assignment for science class is to write a short report on the effects of climate change.",
+            quizSentence: "The reporter was given a dangerous _____ to cover the war in the Middle East."
+        },
+        { 
+            word: "copyright", pos: "[n.]", meaning: "著作權、版權", 
+            sentence: "The band's singer and guitar player hold the copyrights to all the songs they wrote together.",
+            quizSentence: "You cannot use that music in your video because it is protected by _____."
+        },
+        { 
+            word: "distinctive", pos: "[adj.]", meaning: "與眾不同的；獨特的", 
+            sentence: "This building's distinctive shape has made it a local landmark in town.",
+            quizSentence: "Zebras are known for their _____ black and white stripes."
+        },
+        { 
+            word: "compensate", pos: "[v.]", meaning: "補償、賠償；彌補", 
+            sentence: "A new law requires that workers be fairly compensated for any extra hours they work.",
+            quizSentence: "Nothing can _____ for the loss of a loved one."
+        },
+        { 
+            word: "realistic", pos: "[adj.]", meaning: "寫實的；逼真的；現實的", 
+            sentence: "Jessica's painting is very realistic, with every detail carefully shown to make it look almost like a photograph.",
+            quizSentence: "We need to set _____ goals if we want to finish the project on time."
+        },
+        { 
+            word: "photographic", pos: "[adj.]", meaning: "攝影的；照相的", 
+            sentence: "As they investigated the murder, the police gathered photographic images of the crime scene.",
+            quizSentence: "He has a _____ memory and can remember every detail of what he sees."
+        },
+        { 
+            word: "innovation", pos: "[n.]", meaning: "創新、革新；新事物", 
+            sentence: "Their remarkable success in business comes from constant innovation and hard work.",
+            quizSentence: "The smartphone was a major _____ that changed how we communicate."
+        },
+        { 
+            word: "prosperity", pos: "[n.]", meaning: "成功；繁榮、昌盛", 
+            sentence: "With the war finally over, the country enjoyed years of peace and prosperity.",
+            quizSentence: "Economic growth is essential for the future _____ of the nation."
+        }
+    ];
+
+    // --- Tab Logic ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // --- Display Features ---
+    function toggleTheme() {
+        if (document.body.getAttribute('data-theme') === 'dark') {
+            document.body.removeAttribute('data-theme');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    let fontSize = 100;
+    function adjustFont(dir) {
+        fontSize += dir * 10;
+        if (fontSize < 80) fontSize = 80;
+        if (fontSize > 150) fontSize = 150;
+        document.querySelector('.article-text').style.fontSize = fontSize + '%';
+    }
+
+    // --- Quiz Generators ---
+
+    function createQuizItem(id, question, options, answerIndex, explanation) {
+        let html = `<div class="question-box" id="q-${id}">
+            <p><strong>${question}</strong></p>
+            <div class="options">`;
+        
+        options.forEach((opt, idx) => {
+            html += `<label><input type="radio" name="q${id}" value="${idx}"> (${String.fromCharCode(65+idx)}) ${opt}</label>`;
+        });
+
+        html += `</div>
+            <button class="btn-check" onclick="checkAnswer('${id}', ${answerIndex})">Check Answer</button>
+            <div class="feedback" id="fb-${id}">
+                <span class="msg"></span>
+                <div style="font-weight:normal; margin-top:5px; font-size:0.9em">${explanation}</div>
+            </div>
+        </div>`;
+        return html;
+    }
+
+    function checkAnswer(id, correctIdx) {
+        const selected = document.querySelector(`input[name="q${id}"]:checked`);
+        const feedback = document.getElementById(`fb-${id}`);
+        const msg = feedback.querySelector('.msg');
+        
+        if (!selected) return;
+
+        feedback.className = 'feedback'; // reset
+        if (parseInt(selected.value) === correctIdx) {
+            feedback.classList.add('correct');
+            msg.textContent = "✅ Correct!";
+        } else {
+            feedback.classList.add('wrong');
+            msg.textContent = `❌ Incorrect. The correct answer is (${String.fromCharCode(65+correctIdx)}).`;
+        }
+    }
+
+    // --- Initialization ---
+    window.onload = function() {
+        // 1. Populate Vocab Table
+        const tbody = document.getElementById('vocabTableBody');
+        vocabList.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${item.word}</strong> <span style="font-size:0.8em; color:gray">${item.pos}</span></td><td>${item.meaning}</td><td>${item.sentence}</td>`;
+            tbody.appendChild(tr);
+        });
+
+        // 2. Generate Vocab Quiz (Randomized & Mixed Types)
+        let vocabQuizHTML = "";
+        let shuffledVocab = [...vocabList].sort(() => 0.5 - Math.random());
+        
+        shuffledVocab.forEach((wordData, i) => {
+            const type = Math.random() > 0.5 ? 'def' : 'context'; 
+            let question, options, answer, explanation;
+
+            if (type === 'def') {
+                question = `${i+1}. What is the meaning of "<strong>${wordData.word}</strong>"?`;
+                let distractors = vocabList.filter(w => w.word !== wordData.word).sort(() => 0.5 - Math.random()).slice(0, 3).map(w => w.meaning);
+                let optionList = [wordData.meaning, ...distractors].sort(() => 0.5 - Math.random());
+                options = optionList;
+                answer = optionList.indexOf(wordData.meaning);
+                explanation = `<strong>${wordData.word}</strong>: ${wordData.meaning}`;
+            } else {
+                question = `${i+1}. Fill in the blank: <br> "${wordData.quizSentence.replace('_____', '_____')}"`;
+                let distractors = vocabList.filter(w => w.word !== wordData.word).sort(() => 0.5 - Math.random()).slice(0, 3).map(w => w.word);
+                let optionList = [wordData.word, ...distractors].sort(() => 0.5 - Math.random());
+                options = optionList;
+                answer = optionList.indexOf(wordData.word);
+                explanation = `Complete sentence: "${wordData.quizSentence.replace('_____', wordData.word)}"`;
+            }
+            vocabQuizHTML += createQuizItem(`v${i}`, question, options, answer, explanation);
+        });
+        document.getElementById('vocabQuizContainer').innerHTML = vocabQuizHTML;
+
+        // 3. Grammar Quiz
+        let grammarHTML = "";
+        grammarHTML += createQuizItem('g1', 'Only when you finish your homework _____ you go out to play.', ['can', 'you can', 'you cannot', 'did'], 0, 'Only 位於句首修飾副詞子句，主要子句需倒裝 (助動詞提前)。');
+        grammarHTML += createQuizItem('g2', 'We should _____ the available resources to complete the project.', ['break down', 'make the most of', 'compensate for', 'give rise to'], 1, 'make the most of (充分利用)。');
+        grammarHTML += createQuizItem('g3', 'The complex chemical compounds _____ into simpler substances.', ['break down', 'illustrate', 'generate', 'visualize'], 0, 'break down (分解)。');
+        grammarHTML += createQuizItem('g4', 'He offered no _____ for his rude behavior.', ['justification', 'justify', 'justified', 'justifying'], 0, '字尾 -fication 為名詞。justification (辯解/正當理由)。');
+        document.getElementById('grammarQuizContainer').innerHTML = grammarHTML;
+
+        // 4. Integrated & GSAT Quiz
+        let magHTML = "";
+        // Magazine Questions
+        magHTML += createQuizItem('m1', 'According to the article, why are some illustrators concerned about AI image generation?', 
+            ['Because they will need to learn new software.', 'Because it can\'t produce realistic images.', 'Because AI tools are too expensive.', 'Because companies might use AI images instead of their work.'], 
+            3, '文章提到: illustrators fear losing work as companies turn to faster, cheaper AI alternatives.');
+        
+        magHTML += createQuizItem('m2', 'Which of the following statements are true, according to the article?', 
+            ['AI image systems do not need existing images.', 'While AI generation raises copyright issues, it poses no other concerns.', 'Both businesses and students can potentially benefit from AI image generation.', 'AI cannot generate realistic images.'], 
+            2, '文章提到: Businesses can design ads... students can illustrate assignments.');
+        document.getElementById('magQuizContainer').innerHTML = magHTML;
+
+        // Cloze
+        let clozeHTML = "";
+        clozeHTML += createQuizItem('c1', '1. (A) distinctive (B) accessible (C) sophisticated (D) photographic', ['distinctive', 'accessible', 'sophisticated', 'photographic'], 1, 'make art accessible to people (讓一般人也能接觸/使用)。');
+        clozeHTML += createQuizItem('c2', '2. (A) copyright (B) assignment (C) generation (D) prosperity', ['copyright', 'assignment', 'generation', 'prosperity'], 0, 'raise copyright issues (引起版權爭議)。');
+        clozeHTML += createQuizItem('c3', '3. (A) visual (B) realistic (C) artistic (D) beneficial', ['visual', 'realistic', 'artistic', 'beneficial'], 1, 'generate realistic fake images (逼真的假照片)。');
+        clozeHTML += createQuizItem('c4', '4. (A) innovation (B) scam (C) peril (D) attribution', ['innovation', 'scam', 'peril', 'attribution'], 0, 'balance technological innovation (科技創新)。');
+        clozeHTML += createQuizItem('c5', '5. (A) we can (B) can we (C) we ensure (D) ensuring we', ['we can', 'can we', 'we ensure', 'ensuring we'], 1, 'Only by doing so... (Only + 副詞片語放句首，後面倒裝 -> can we)。');
+        document.getElementById('clozeQuizContainer').innerHTML = clozeHTML;
+
+        // Reading Comprehension
+        let readHTML = "";
+        readHTML += createQuizItem('r1', 'What is the main idea of this article?', 
+            ['How to install AI software on your computer.', 'The history of Studio Ghibli.', 'The benefits and risks of AI image generation.', 'Why painting is better than digital art.'], 
+            2, '文章標題為 "The Promise and Perils" (潛力與風險)，探討雙面影響。');
+        readHTML += createQuizItem('r2', 'What does the term "Ghiblification" refer to in the article?', 
+            ['A new movie released by Studio Ghibli.', 'Using AI to reimagine scenes in the style of Studio Ghibli.', 'The process of making movies cheaper.', 'A copyright law protecting anime.'], 
+            1, '文章提到: people asked AI tools to reimagine everyday scenes in the style of Studio Ghibli films.');
+        document.getElementById('readingQuizContainer').innerHTML = readHTML;
+    };
+</script>
+
+</body>
+</html>

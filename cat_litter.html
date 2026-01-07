@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Tofu to Tea Leaves: Taiwan's Cat Litter Goes Green</title>
+    <style>
+        :root {
+            --primary-color: #558b2f; /* Eco Green */
+            --secondary-color: #795548; /* Earth Brown */
+            --bg-color: #f1f8e9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #c5e1a5;
+            --highlight: #dcedc8;
+            --ref-word-color: #689f38;
+            --correct: #2e7d32;
+            --wrong: #c62828;
+            --slot-bg: #fff3e0;
+            --slot-active: #ffe0b2;
+            --chip-bg: #ffffff;
+            --chip-border: #558b2f;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #aed581;
+            --secondary-color: #bcaaa4;
+            --bg-color: #1b1b1b;
+            --text-color: #e0e0e0;
+            --card-bg: #262626;
+            --border-color: #424242;
+            --highlight: #33691e;
+            --ref-word-color: #9ccc65;
+            --slot-bg: #3e2723;
+            --slot-active: #4e342e;
+            --chip-bg: #424242;
+            --chip-border: #aed581;
+        }
+
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            background: linear-gradient(135deg, #558b2f, #2e7d32);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.5px; }
+        header p { margin-top: 8px; opacity: 0.9; }
+
+        .controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        button.icon-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        button.icon-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* Tabs */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            background: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-color);
+            border-bottom: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab:hover {
+            background-color: rgba(0,0,0,0.03);
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            border-bottom: 4px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: none;
+            padding-bottom: 80px;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Article Styles */
+        .article-text {
+            font-size: 1.1rem;
+            text-align: justify;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .article-text p { margin-bottom: 1.5em; }
+
+        .vocab-highlight {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .ref-word {
+            font-size: 0.9em;
+            color: var(--ref-word-color);
+            background-color: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 2px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--card-bg);
+            margin-bottom: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: rgba(0,0,0,0.02); }
+
+        /* Grammar/Spotlight Section */
+        .grammar-point {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 6px solid var(--primary-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .grammar-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .example {
+            font-style: italic;
+            color: var(--text-color);
+            margin-top: 8px;
+            padding-left: 15px;
+            border-left: 3px solid #ddd;
+        }
+
+        /* --- Drag/Click Interaction Styles --- */
+        
+        .word-bank-container {
+            position: sticky;
+            top: 60px; /* Below tabs */
+            z-index: 90;
+            background-color: var(--bg-color);
+            padding: 10px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .word-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .word-chip {
+            background-color: var(--chip-bg);
+            border: 2px solid var(--chip-border);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .word-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .word-chip.selected {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 3px rgba(85, 139, 47, 0.3);
+            transform: scale(1.05);
+        }
+
+        .word-chip.used {
+            opacity: 0.3;
+            pointer-events: none;
+            background-color: #ccc;
+            border-color: #ccc;
+            transform: scale(0.9);
+        }
+
+        .cloze-slot {
+            display: inline-block;
+            min-width: 80px;
+            height: 1.8em;
+            vertical-align: middle;
+            background-color: var(--slot-bg);
+            border-bottom: 2px solid var(--secondary-color);
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 5px;
+            padding: 0 10px;
+            border-radius: 4px 4px 0 0;
+            transition: 0.2s;
+        }
+
+        .cloze-slot:hover {
+            background-color: var(--slot-active);
+        }
+        
+        .cloze-slot.filled {
+            background-color: rgba(85, 139, 47, 0.1);
+            border-bottom-style: solid;
+        }
+
+        .cloze-slot.correct {
+            color: var(--correct);
+            border-bottom-color: var(--correct);
+            background-color: rgba(46, 125, 50, 0.1);
+        }
+
+        .cloze-slot.wrong {
+            color: var(--wrong);
+            border-bottom-color: var(--wrong);
+            background-color: rgba(198, 40, 40, 0.1);
+        }
+
+        /* Instructions */
+        .instruction-banner {
+            background-color: rgba(85, 139, 47, 0.1);
+            border: 1px dashed var(--primary-color);
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .btn-action {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+
+        .btn-action.submit { background-color: var(--primary-color); }
+        .btn-action:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        .actions-bar { text-align: center; margin-top: 30px; }
+
+        .explanation-box {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .exp-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .exp-key { color: var(--primary-color); font-weight: bold; margin-right: 5px; }
+
+        .more-info-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .more-info-list li {
+            background: rgba(0,0,0,0.03);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-top: 30px; color: var(--text-color);}
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .article-text { padding: 20px; font-size: 1rem; }
+            .tab { padding: 12px 15px; font-size: 0.9rem; }
+            .word-chip { font-size: 0.85rem; padding: 6px 12px; }
+            .word-bank-container { top: 50px; } 
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>From Tofu to Tea Leaves: Taiwan's Cat Litter Goes Green</h1>
+    <p>Unit 5: 養貓也能減碳！環保貓砂新選擇</p>
+    <div class="controls">
+        <button class="icon-btn" onclick="toggleTheme()">🌗 Mode</button>
+        <button class="icon-btn" onclick="adjustFont(1)">A+</button>
+        <button class="icon-btn" onclick="adjustFont(-1)">A-</button>
+    </div>
+</header>
+
+<div class="tab-container">
+    <div class="tab active" onclick="switchTab('tab1')">文章全文 (含解答)</div>
+    <div class="tab" onclick="switchTab('tab2')">單字與參考字彙</div>
+    <div class="tab" onclick="switchTab('tab3')">Language Spotlight</div>
+    <div class="tab" onclick="switchTab('tab4')">文意選填測驗</div>
+</div>
+
+<!-- TAB 1: 文章全文 (閱讀模式) -->
+<div id="tab1" class="content active">
+    <div class="article-text">
+        <p>In 2024, the number of pet cats in Taiwan surpassed <span class="ref-word">(vt. 超過)</span> 1.31 million, a 50% jump from 2022. This sharp <strong>(F) rise</strong> shows a growing interest in cat ownership. But with more cats comes a type of household waste many people overlook: used cat litter <span class="ref-word">(n. 貓砂)</span>.</p>
+        
+        <p>Unlike food <strong>(G) scraps</strong> or packaging, it's harder to manage and often ends up in landfills <span class="ref-word">(n. 垃圾掩埋場)</span>. While many cat owners choose traditional <strong class="vocab-highlight">mineral</strong>-based litter for its affordability <span class="ref-word">(n. 可負擔性)</span>, this popular option comes with hidden environmental costs. Most mineral litter is made from non-<strong class="vocab-highlight">renewable</strong> resources and involves environmentally <strong>(C) destructive</strong> mining processes. Plus, because it can't be incinerated <span class="ref-word">(vt. 焚化)</span> or easily <strong class="vocab-highlight">broken down</strong>, it adds weight and volume to household waste. This <strong>(I) strains</strong> waste systems and can even damage garbage trucks by clogging <span class="ref-word">(v. 堵塞)</span> their <strong class="vocab-highlight">compacting</strong> <strong class="vocab-highlight">mechanisms</strong>.</p>
+
+        <p>To tackle this issue, businesses have developed eco-friendly <strong>(A) alternatives</strong> made from natural materials. For example, cat litter made from tofu residue <span class="ref-word">(n. 油渣、殘餘物)</span> or wood shavings <span class="ref-word">(n. 刨花)</span> is biodegradable <span class="ref-word">(adj. 可生物分解的)</span>, absorbs moisture well, and is easier to <strong>(E) dispose of</strong>. Other types use recycled paper, which reduces waste while giving discarded <span class="ref-word">(vt. 拋棄、丟棄)</span> materials a new purpose.</p>
+
+        <p>In Taiwan, some creative solutions have emerged. Used tea leaves, which are usually thrown away, have found new life as cat litter. Treated with <strong>(H) beneficial</strong> microbes <span class="ref-word">(n. 微生物)</span>, this litter provides natural odor <span class="ref-word">(n. 氣味)</span> control and antibacterial <span class="ref-word">(adj. 抗菌的)</span> properties. Another exciting <strong>(D) innovation</strong> comes from I-Shou University, where a group of students has developed an eco-friendly cat litter made from rice husks <span class="ref-word">(n. 殼)</span>. This <strong class="vocab-highlight">agricultural</strong> byproduct <span class="ref-word">(n. 副產品)</span> is often discarded after harvest. The students' invention <strong>(B) soaks up</strong> moisture effectively and can even be <strong class="vocab-highlight">flushed</strong> down the toilet, offering both convenience and <strong class="vocab-highlight">sustainability</strong>. These examples show that everyday tasks like taking care of pets can <strong>(J) inspire</strong> smart, eco-friendly ideas. Even if you don't have a cat, they're a <strong class="vocab-highlight">reminder</strong> that small choices can make a big difference.</p>
+    </div>
+</div>
+
+<!-- TAB 2: 單字介紹 -->
+<div id="tab2" class="content">
+    <h2>Vocabulary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Meaning & Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. mineral</strong> [ˈmɪnərəl]</td>
+                <td>n. 礦物；礦物質<br><span class="example">Natural minerals like quartz and iron are important resources for making tools, machines, and electronics.</span></td>
+            </tr>
+            <tr>
+                <td><strong>2. renewable</strong> [rɪˈnjuəbl]</td>
+                <td>adj. (能源) 可再生的<br><span class="example">Solar and wind energy are two of the most popular forms of renewable energy sources today.</span></td>
+            </tr>
+            <tr>
+                <td><strong>3. break down</strong></td>
+                <td>分解<br><span class="example">Plastic takes hundreds of years to break down completely in the environment.</span></td>
+            </tr>
+            <tr>
+                <td><strong>4. compact</strong> [kəmˈpækt]</td>
+                <td>v. 壓縮；壓緊<br><span class="example">Please compact your trash before throwing it away to save space in the trash can.</span></td>
+            </tr>
+            <tr>
+                <td><strong>5. mechanism</strong> [ˈmɛkəˌnɪzəm]</td>
+                <td>n. 機械裝置；機制<br><span class="example">The mechanism of the clock ensures it keeps accurate time.</span></td>
+            </tr>
+            <tr>
+                <td><strong>6. agricultural</strong> [ˌægrɪˈkʌltʃərəl]</td>
+                <td>adj. 農業的<br><span class="example">Advances in agricultural technology have helped farmers grow more food using fewer resources.</span></td>
+            </tr>
+            <tr>
+                <td><strong>7. flush</strong> [flʌʃ]</td>
+                <td>v. 沖水；臉紅<br><span class="example">After using the toilet, please remember to flush and wash your hands properly.</span></td>
+            </tr>
+            <tr>
+                <td><strong>8. sustainability</strong> [səˌstenəˈbɪləti]</td>
+                <td>n. 永續性<br><span class="example">Sustainability in farming means using techniques that preserve soil and water.</span></td>
+            </tr>
+            <tr>
+                <td><strong>9. reminder</strong> [rɪˈmaɪndɚ]</td>
+                <td>n. 提醒<br><span class="example">I set a reminder on my phone so I wouldn't forget to attend the online meeting.</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>More Information (參考字彙)</h2>
+    <ul class="more-info-list">
+        <li><strong>litter</strong> [ˈlɪtɚ] n. (供寵物便溺的) 貓砂</li>
+        <li><strong>surpass</strong> [sɚˈpæs] vt. 超過</li>
+        <li><strong>landfill</strong> [ˈlændfɪl] n. 垃圾掩埋場</li>
+        <li><strong>affordability</strong> [əˌfɔrdəˈbɪləti] n. 可負擔性</li>
+        <li><strong>incinerate</strong> [ɪnˈsɪnəˌret] vt. 焚化；焚燒</li>
+        <li><strong>clog</strong> [klɑg] v. (使) 堵塞</li>
+        <li><strong>residue</strong> [ˈrɛzəˌdju] n. 油渣；殘餘物</li>
+        <li><strong>shavings</strong> [ˈʃevɪŋz] n. (刨削下來的) 薄片(恆用複數)</li>
+        <li><strong>biodegradable</strong> [ˌbaɪodɪˈgredəbl] adj. 可行生物分解的</li>
+        <li><strong>discard</strong> [dɪsˈkɑrd] vt. 拋棄；扔掉</li>
+        <li><strong>microbe</strong> [ˈmaɪkrob] n. 微生物</li>
+        <li><strong>odor</strong> [ˈodɚ] n. 氣味；臭氣</li>
+        <li><strong>antibacterial</strong> [ˌæntibækˈtɪrɪəl] adj. 抗菌的</li>
+        <li><strong>husk</strong> [hʌsk] n. (種子或果實的) 外殼</li>
+        <li><strong>byproduct</strong> [ˈbaɪˌprɑdəkt] n. 副產品</li>
+    </ul>
+</div>
+
+<!-- TAB 3: Language Spotlight -->
+<div id="tab3" class="content">
+    <h2>Language Spotlight: break down</h2>
+    <div class="grammar-point">
+        <div class="grammar-title">片語 break down 的其他常見字義</div>
+        <ol style="margin: 0; padding-left: 20px;">
+            <li>
+                <strong>故障</strong>
+                <p class="example">I called the landlord to ask what to do when my refrigerator broke down.</p>
+            </li>
+            <li>
+                <strong>失敗</strong>
+                <p class="example">The discussion broke down after Stacy called Tom an idiot in the meeting.</p>
+            </li>
+            <li>
+                <strong>撞倒</strong>
+                <p class="example">The firefighters broke down the door to rescue people from the burning building.</p>
+            </li>
+            <li>
+                <strong>破除</strong>
+                <p class="example">Putting children of different backgrounds in the same class broke down the barriers between them.</p>
+            </li>
+            <li>
+                <strong>情緒崩潰</strong>
+                <p class="example">Karen was so upset that she broke down and demanded to talk to the manager.</p>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<!-- TAB 4: 文意選填測驗 (Interactive) -->
+<div id="tab4" class="content">
+    
+    <div class="instruction-banner">
+        💡 操作提示：先點擊上方的「單字卡」，再點擊文章中的「空格」即可填入。點擊已填入的空格可移除答案。
+    </div>
+
+    <div class="word-bank-container">
+        <div class="word-bank-grid" id="wordBankGrid">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <div class="article-text" id="interactiveArticle">
+        <p>In 2024, the number of pet cats in Taiwan surpassed 1.31 million, a 50% jump from 2022. This sharp <span class="cloze-slot" data-id="q1" onclick="handleSlotClick('q1')">1</span> shows a growing interest in cat ownership. But with more cats comes a type of household waste many people overlook: used cat litter.</p>
+
+        <p>Unlike food <span class="cloze-slot" data-id="q2" onclick="handleSlotClick('q2')">2</span> or packaging, it's harder to manage and often ends up in landfills. While many cat owners choose traditional mineral-based litter for its affordability, this popular option comes with hidden environmental costs. Most mineral litter is made from non-renewable resources and involves environmentally <span class="cloze-slot" data-id="q3" onclick="handleSlotClick('q3')">3</span> mining processes. Plus, because it can't be incinerated or easily broken down, it adds weight and volume to household waste. This <span class="cloze-slot" data-id="q4" onclick="handleSlotClick('q4')">4</span> waste systems and can even damage garbage trucks by clogging their compacting mechanisms.</p>
+
+        <p>To tackle this issue, businesses have developed eco-friendly <span class="cloze-slot" data-id="q5" onclick="handleSlotClick('q5')">5</span> made from natural materials. For example, cat litter made from tofu residue or wood shavings is biodegradable, absorbs moisture well, and is easier to <span class="cloze-slot" data-id="q6" onclick="handleSlotClick('q6')">6</span>. Other types use recycled paper, which reduces waste while giving discarded materials a new purpose.</p>
+
+        <p>In Taiwan, some creative solutions have emerged. Used tea leaves, which are usually thrown away, have found new life as cat litter. Treated with <span class="cloze-slot" data-id="q7" onclick="handleSlotClick('q7')">7</span> microbes, this litter provides natural odor control and antibacterial properties. Another exciting <span class="cloze-slot" data-id="q8" onclick="handleSlotClick('q8')">8</span> comes from I-Shou University, where a group of students has developed an eco-friendly cat litter made from rice husks. This agricultural byproduct is often discarded after harvest. The students' invention <span class="cloze-slot" data-id="q9" onclick="handleSlotClick('q9')">9</span> moisture effectively and can even be flushed down the toilet, offering both convenience and sustainability. These examples show that everyday tasks like taking care of pets can <span class="cloze-slot" data-id="q10" onclick="handleSlotClick('q10')">10</span> smart, eco-friendly ideas. Even if you don't have a cat, they're a reminder that small choices can make a big difference.</p>
+    </div>
+
+    <div class="actions-bar">
+        <button class="btn-action" onclick="resetQuiz()">Reset Quiz</button>
+        <button class="btn-action submit" onclick="checkAnswers()">Submit Answers</button>
+    </div>
+
+    <div class="explanation-box" id="clozeFeedback">
+        <h3>Answer Key & Explanations</h3>
+        
+        <div class="exp-item">
+            <span class="exp-key">1. (F) rise</span>
+            <p>本空格應填單數名詞，由前方的形容詞 sharp (急劇的) 所修飾。由後文「從 2022 年暴增了 50%」可知，此處指貓咪數量的增加。故答案選 (F)。</p>
+        </div>
+        
+        <div class="exp-item">
+            <span class="exp-key">2. (G) scraps</span>
+            <p>本空格前一句提到臺灣的寵物貓數量...。空格本句以 Unlike food _____ or packaging 開頭，說明貓砂與廚餘和包裝材料的不同。scraps 指「剩菜、殘羹」，food scraps 即為廚餘。故答案選 (G)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">3. (C) destructive</span>
+            <p>本空格位於名詞 mining processes 之前，應填入形容詞修飾。destructive 表示「有破壞性的」。句意指開採礦物貓砂的過程對環境有破壞性。故答案選 (C)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">4. (I) strains</span>
+            <p>本句的主詞是 This (指前一句提到的「貓砂會增加家庭垃圾的重量與體積」)。空格需填入動詞單數，表示這對廢棄物處理系統造成的影響。strain 在此作動詞，意為「(使) 承受壓力」。故答案選 (I)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">5. (A) alternatives</span>
+            <p>本空格應填名詞，由前方的形容詞 eco-friendly 所修飾。句意說明為了應對這個問題，企業開發了「環保替代方案」(alternatives)。故答案選 (A)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">6. (E) dispose of</span>
+            <p>本空格位於不定詞 to 之後，應填原形動詞片語。dispose of 意為「處理；清除」。句意指豆腐渣或木屑製成的貓砂更容易處理。故答案選 (E)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">7. (H) beneficial</span>
+            <p>本空格填形容詞，修飾其後的名詞 microbes (微生物)。beneficial 意為「有益的」。句意指用有益微生物處理過的茶葉貓砂。故答案選 (H)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">8. (D) innovation</span>
+            <p>本空格應填單數名詞，由前方的形容詞 exciting (令人興奮的) 修飾。innovation 意為「創新」。句意介紹另一種來自義守大學學生的創新發明。故答案選 (D)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">9. (B) soaks up</span>
+            <p>本句的主詞 The students' invention 為單數，因此空格應填單數動詞。soak up 意為「吸收 (液體)」。句意指這種稻殼貓砂能有效吸收水分。故答案選 (B)。</p>
+        </div>
+
+        <div class="exp-item">
+            <span class="exp-key">10. (J) inspire</span>
+            <p>本句 These examples show that everyday tasks like taking care of pets can _____ smart, eco-friendly ideas. 空格位於助動詞 can 之後，應填原形動詞。inspire 意為「激發；賦予靈感」。句意指日常任務也能激發聰明的環保點子。故答案選 (J)。</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Data ---
+    const correctAnswers = {
+        q1: 'F', q2: 'G', q3: 'C', q4: 'I', q5: 'A',
+        q6: 'E', q7: 'H', q8: 'D', q9: 'B', q10: 'J'
+    };
+
+    const wordList = [
+        { id: 'A', text: '(A) alternatives' },
+        { id: 'B', text: '(B) soaks up' },
+        { id: 'C', text: '(C) destructive' },
+        { id: 'D', text: '(D) innovation' },
+        { id: 'E', text: '(E) dispose of' },
+        { id: 'F', text: '(F) rise' },
+        { id: 'G', text: '(G) scraps' },
+        { id: 'H', text: '(H) beneficial' },
+        { id: 'I', text: '(I) strains' },
+        { id: 'J', text: '(J) inspire' }
+    ];
+
+    let selectedChipId = null;
+    let userAnswers = {
+        q1: null, q2: null, q3: null, q4: null, q5: null,
+        q6: null, q7: null, q8: null, q9: null, q10: null
+    };
+
+    // --- Tab Logic ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // --- Display Features ---
+    function toggleTheme() {
+        if (document.body.getAttribute('data-theme') === 'dark') {
+            document.body.removeAttribute('data-theme');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    let fontSize = 100;
+    function adjustFont(dir) {
+        fontSize += dir * 10;
+        if (fontSize < 80) fontSize = 80;
+        if (fontSize > 150) fontSize = 150;
+        document.querySelectorAll('.article-text').forEach(el => el.style.fontSize = fontSize + '%');
+    }
+
+    // --- Interactive Cloze Logic ---
+
+    // 1. Initialize Word Bank (Shuffle)
+    window.onload = function() {
+        initWordBank();
+    };
+
+    function initWordBank() {
+        const bankContainer = document.getElementById('wordBankGrid');
+        bankContainer.innerHTML = '';
+        
+        // Shuffle
+        let shuffled = [...wordList].sort(() => 0.5 - Math.random());
+
+        shuffled.forEach(word => {
+            const chip = document.createElement('div');
+            chip.className = 'word-chip';
+            chip.innerText = word.text;
+            chip.id = 'chip-' + word.id;
+            chip.onclick = () => handleChipClick(word.id);
+            bankContainer.appendChild(chip);
+        });
+
+        // Reset slots visuals
+        for (let i = 1; i <= 10; i++) {
+            const slot = document.querySelector(`.cloze-slot[data-id="q${i}"]`);
+            slot.innerText = i;
+            slot.classList.remove('filled', 'correct', 'wrong');
+        }
+        
+        userAnswers = { q1: null, q2: null, q3: null, q4: null, q5: null, q6: null, q7: null, q8: null, q9: null, q10: null };
+        selectedChipId = null;
+        document.getElementById('clozeFeedback').style.display = 'none';
+    }
+
+    // 2. Click on Word Bank Item
+    function handleChipClick(id) {
+        // If same clicked, deselect
+        if (selectedChipId === id) {
+            selectedChipId = null;
+            updateBankVisuals();
+            return;
+        }
+        selectedChipId = id;
+        updateBankVisuals();
+    }
+
+    function updateBankVisuals() {
+        // Reset all selected states
+        document.querySelectorAll('.word-chip').forEach(el => {
+            el.classList.remove('selected');
+        });
+        
+        // Highlight selected
+        if (selectedChipId) {
+            const chip = document.getElementById('chip-' + selectedChipId);
+            if (chip) chip.classList.add('selected');
+        }
+    }
+
+    // 3. Click on Article Slot
+    function handleSlotClick(slotId) {
+        const slot = document.querySelector(`.cloze-slot[data-id="${slotId}"]`);
+        
+        // Scenario A: Slot is filled -> Empty it
+        if (userAnswers[slotId]) {
+            // Return chip to bank (make active)
+            const chipId = userAnswers[slotId];
+            const chip = document.getElementById('chip-' + chipId);
+            chip.classList.remove('used');
+            
+            // Clear slot
+            userAnswers[slotId] = null;
+            slot.innerText = slotId.replace('q', '');
+            slot.classList.remove('filled', 'correct', 'wrong');
+            return;
+        }
+
+        // Scenario B: Slot is empty -> Fill it if chip selected
+        if (selectedChipId) {
+            // Fill
+            userAnswers[slotId] = selectedChipId;
+            const wordObj = wordList.find(w => w.id === selectedChipId);
+            
+            slot.innerText = wordObj.text; // Or just the letter? Let's show full text for better reading
+            slot.classList.add('filled');
+
+            // Mark chip as used
+            const chip = document.getElementById('chip-' + selectedChipId);
+            chip.classList.add('used');
+            chip.classList.remove('selected');
+
+            // Deselect
+            selectedChipId = null;
+        }
+    }
+
+    // 4. Submit & Check
+    function checkAnswers() {
+        let allCorrect = true;
+        let answeredCount = 0;
+
+        for (let i = 1; i <= 10; i++) {
+            const qId = 'q' + i;
+            const slot = document.querySelector(`.cloze-slot[data-id="${qId}"]`);
+            const userAns = userAnswers[qId];
+            
+            if (userAns) answeredCount++;
+
+            if (userAns === correctAnswers[qId]) {
+                slot.classList.add('correct');
+                slot.classList.remove('wrong');
+            } else {
+                slot.classList.add('wrong');
+                slot.classList.remove('correct');
+                allCorrect = false;
+            }
+        }
+
+        if (answeredCount < 10) {
+            alert(`You have answered ${answeredCount}/10 questions. Keep going!`);
+        } else if (allCorrect) {
+            alert("Congratulations! All answers are correct! 🎉");
+        } else {
+            alert("Some answers are incorrect. Please check the explanations below.");
+        }
+
+        const feedbackBox = document.getElementById('clozeFeedback');
+        feedbackBox.style.display = 'block';
+        feedbackBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+        if(confirm("Are you sure you want to reset the quiz?")) {
+            initWordBank();
+        }
+    }
+
+</script>
+
+</body>
+</html>

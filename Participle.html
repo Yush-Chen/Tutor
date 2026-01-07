@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participle Detective Agency</title>
+    <style>
+        :root {
+            --bg-color: #2c3e50; /* Dark Blue */
+            --card-bg: #34495e;
+            --accent: #f1c40f; /* Detective Gold */
+            --text-light: #ecf0f1;
+            --btn-color: #e67e22;
+            --correct: #27ae60;
+            --wrong: #c0392b;
+        }
+
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            background-image: repeating-linear-gradient(45deg, #2c3e50 0, #2c3e50 10px, #253342 10px, #253342 20px);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 3px solid var(--accent);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #bdc3c7;
+        }
+
+        .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+
+        /* Section Styles */
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 5px solid var(--accent);
+        }
+
+        h2 { color: var(--accent); margin-top: 0; border-bottom: 1px solid #7f8c8d; padding-bottom: 10px; }
+        h3 { color: var(--btn-color); margin-top: 20px; }
+
+        /* The Detective Method Steps */
+        .method-step {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .step-num {
+            background: var(--accent);
+            color: var(--bg-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Examples */
+        .example-box {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .ghost-subject {
+            color: #95a5a6;
+            border: 1px dashed #7f8c8d;
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+
+        .arrow { color: var(--btn-color); font-weight: bold; }
+
+        /* Trap Zone */
+        .trap-zone {
+            background-color: #c0392b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .trap-zone h3 { color: #f1c40f; }
+
+        /* Interactive Quiz */
+        .quiz-item {
+            border-bottom: 1px solid #7f8c8d;
+            padding: 20px 0;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background-color: var(--accent);
+            color: var(--bg-color);
+        }
+
+        .option-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.correct { background: var(--correct); color: white; }
+        .feedback.wrong { background: var(--wrong); color: white; }
+
+        .hint-text {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="icon">🕵️‍♂️</span>
+        <h1>Participle Detective Agency</h1>
+        <p>分詞偵探社：尋找隱形的主詞</p>
+    </header>
+
+    <!-- 1. The Method -->
+    <div class="section-card">
+        <h2>🔍 The "Restoration" Method (還原大法)</h2>
+        <p>不要憑感覺！請依循偵探守則，執行以下兩個步驟來破案：</p>
+
+        <div class="method-step">
+            <div class="step-num">1</div>
+            <div>
+                <strong>Find the Ghost (抓出隱形主詞)</strong><br>
+                分詞構句之所以沒有主詞，是因為它跟<strong>後面主要子句的主詞</strong>一模一樣。請先把後面那個主詞圈起來，拉到前面！
+            </div>
+        </div>
+
+        <div class="method-step">
+            <div class="step-num">2</div>
+            <div>
+                <strong>Restore & Check (還原並測試)</strong><br>
+                將抓到的主詞放回去，問自己兩個問題：
+                <ul>
+                    <li>主詞能夠<strong>主動</strong>做這個動作嗎？ 👉 <strong>V-ing</strong></li>
+                    <li>主詞是被這個動作<strong>影響/承受</strong>嗎？ 👉 <strong>p.p.</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Demonstration -->
+    <div class="section-card">
+        <h2>💡 Case Study (案件示範)</h2>
+        
+        <h3>Case A: The Dog</h3>
+        <p>______ by the noise, the dog barked loudly. (frighten)</p>
+        <div class="example-box">
+            Step 1: 抓主詞 👉 <strong>The dog</strong><br>
+            Step 2: 還原測試 👉 <span class="ghost-subject">The dog</span> was frightened? OR <span class="ghost-subject">The dog</span> frightened someone?<br>
+            <span class="arrow">Result:</span> 狗是「被」噪音嚇到的 (接收動作)。<br>
+            Answer: <strong>Frightened</strong> by the noise, ...
+        </div>
+
+        <h3>Case B: The Girl</h3>
+        <p>______ a red dress, the girl looks beautiful. (wear)</p>
+        <div class="example-box">
+            Step 1: 抓主詞 👉 <strong>The girl</strong><br>
+            Step 2: 還原測試 👉 <span class="ghost-subject">The girl</span> wears the dress? (Yes!)<br>
+            <span class="arrow">Result:</span> 女孩「主動」穿著洋裝。<br>
+            Answer: <strong>Wearing</strong> a red dress, ...
+        </div>
+
+        <div class="trap-zone">
+            <h3>⚠️ Special Trap: Emotive Verbs (情緒動詞陷阱)</h3>
+            <p>遇到 bore, tire, excite, interest 這類字時，請這樣判斷：</p>
+            <ul>
+                <li><strong>V-ing (令人...的)</strong>：主詞是「散發感覺」的源頭。(通常是物/事，但也可能是人)</li>
+                <li><strong>p.p. (感到...的)</strong>：主詞是「內心接收感覺」的人。</li>
+            </ul>
+            <p>Example: <strong>Bored</strong> by the class, John fell asleep. (John 感到無聊)<br>
+            Example: <strong>Boring</strong> everyone, the teacher kept talking. (老師令人無聊)</p>
+        </div>
+    </div>
+
+    <!-- 3. Practice -->
+    <div class="section-card">
+        <h2>⚔️ Detective Training (實戰演練)</h2>
+        <p>請運用還原大法，選出正確的形態。</p>
+
+        <!-- Q1 -->
+        <div class="quiz-item">
+            <div class="question">1. ______ from the top of the 101 building, the cars look like ants.</div>
+            <div class="hint-text">Ghost Subject: The cars (車子會自己看，還是被看？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q1')">Seeing</button>
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q1')">Seen</button>
+            </div>
+            <div id="q1-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-item">
+            <div class="question">2. ______ his work, Tom went home early.</div>
+            <div class="hint-text">Ghost Subject: Tom (湯姆主動完成工作，還是被完成？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q2')">Finishing</button>
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q2')">Finished</button>
+            </div>
+            <div id="q2-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-item">
+            <div class="question">3. ______ in simple English, the book is easy to read.</div>
+            <div class="hint-text">Ghost Subject: The book (書會寫字，還是書被寫？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q3')">Writing</button>
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q3')">Written</button>
+            </div>
+            <div id="q3-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-item">
+            <div class="question">4. ______ by the sad news, she started to cry. (Shock)</div>
+            <div class="hint-text">Ghost Subject: She (她是令人震驚，還是感到震驚？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q4')">Shocking</button>
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q4')">Shocked</button>
+            </div>
+            <div id="q4-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="quiz-item">
+            <div class="question">5. ______ on the grass, the dog looks happy. (Lie)</div>
+            <div class="hint-text">Ghost Subject: The dog (不及物動詞陷阱！躺是一個狀態)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q5')">Lying</button>
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q5')">Lied</button>
+            </div>
+            <div id="q5-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="quiz-item">
+            <div class="question">6. ______ around the corner, the thief ran away. (Turn)</div>
+            <div class="hint-text">Ghost Subject: The thief (小偷主動轉彎，還是被轉彎？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q6')">Turning</button>
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q6')">Turned</button>
+            </div>
+            <div id="q6-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="quiz-item">
+            <div class="question">7. ______ with history, Tainan is a great city to visit. (Fill)</div>
+            <div class="hint-text">Ghost Subject: Tainan (台南主動去裝滿歷史，還是台南被歷史充滿？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q7')">Filling</button>
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q7')">Filled</button>
+            </div>
+            <div id="q7-fb" class="feedback"></div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="quiz-item">
+            <div class="question">8. Not ______ what to do, the boy asked his mom. (Know)</div>
+            <div class="hint-text">Ghost Subject: The boy (男孩主動不知道，還是被不知道？)</div>
+            <div class="btn-group">
+                <button class="option-btn" onclick="checkAnswer(this, true, 'q8')">knowing</button>
+                <button class="option-btn" onclick="checkAnswer(this, false, 'q8')">known</button>
+            </div>
+            <div id="q8-fb" class="feedback"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function checkAnswer(btn, isCorrect, id) {
+        // Disable buttons in this group
+        const parent = btn.parentElement;
+        const buttons = parent.getElementsByTagName('button');
+        for(let b of buttons) {
+            b.classList.add('disabled');
+            b.disabled = true;
+        }
+
+        const feedback = document.getElementById(id + '-fb');
+        feedback.style.display = 'block';
+
+        if (isCorrect) {
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = '✅ Correct! 你的還原大法成功了！';
+            btn.style.backgroundColor = 'var(--correct)';
+            btn.style.borderColor = 'var(--correct)';
+            btn.style.color = 'white';
+        } else {
+            feedback.className = 'feedback wrong';
+            feedback.innerHTML = '❌ Oops! 想想看：主詞跟動作的關係是主動還是被動？';
+            btn.style.backgroundColor = 'var(--wrong)';
+            btn.style.borderColor = 'var(--wrong)';
+            btn.style.color = 'white';
+        }
+    }
+</script>
+
+</body>
+</html>
